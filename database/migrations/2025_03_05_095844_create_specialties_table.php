@@ -16,6 +16,8 @@ return new class extends Migration
             $table->unsignedBigInteger('department_id')->nullable(); //部署に紐付けるか、独立させるかどちらでも可能
             $table->string('name');
             $table->timestamps();
+
+            $table->foreign('department_id')->references('id')->on('departments')->onDelete('cascade');
         });
     }
 
