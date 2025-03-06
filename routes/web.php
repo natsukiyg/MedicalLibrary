@@ -65,12 +65,26 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('manuals.edit');
     Route::patch('/manuals/{manual}', [ManualController::class, 'update'])
         ->name('manuals.update');
+    // 6) マニュアル削除（チームメンバー or 管理者向け）
+    Route::get('/manuals/{manual}/delete', [ManualController::class, 'confirmDelete'])
+        ->name('manuals.delete.confirm');
+    Route::delete('/manuals/{manual}', [ManualController::class, 'destroy'])
+        ->name('manuals.destroy');
+    // 7) マニュアル新規作成（チームメンバー or 管理者向け）
+    Route::get('/manuals/create', [ManualController::class, 'create'])
+        ->name('manuals.create');
+    Route::post('/manuals', [ManualController::class, 'store'])
+        ->name('manuals.store');
 
     // ------------------------------
     // ナレッジ関連（同様にリソースルートや段階的画面を用意）
     // ------------------------------
     Route::resource('knowledges', KnowledgeController::class)
         ->only(['index', 'show', 'create', 'store', 'edit', 'update', 'destroy']);
+    
+    //ナレッジ削除（チームメンバー or 管理者向け）
+    Route::get('/knowledges/{knowledge}/delete', [KnowledgeController::class, 'confirmDelete'])
+        ->name('knowledges.delete.confirm');
 });
 
 // ------------------------------

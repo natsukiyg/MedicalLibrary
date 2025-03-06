@@ -26,6 +26,16 @@ class Manual extends Model
         return $this->belongsTo(Specialty::class);
     }
 
+    public function classification()
+    {
+        return $this->belongsTo(Classification::class);
+    }
+    
+    public function procedure()
+    {
+        return $this->belongsTo(Procedure::class);
+    }    
+
     public function creater()
     {
         return $this->belongsTo(User::class, 'created_by');
