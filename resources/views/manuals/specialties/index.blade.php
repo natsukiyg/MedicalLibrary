@@ -13,7 +13,7 @@
     @endphp
 
     <!-- 診療科ボタン一覧 -->
-    <div class="flex flex-wrap gap-4 mb-6">
+    <div class="grid gap-4 mb-6" style="grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));">
         @foreach($specialties as $specialty)
             <!-- 診療科ボタンがアクティブかどうかでスタイルを変更 -->
             @php
@@ -25,7 +25,7 @@
             @endphp
             <!-- リンク先は、選択された診療科に紐づく分類一覧のページを想定 -->
             <a href="{{ route('manuals.classification.index', $specialty->id) }}"
-               class="{{ $classes }}">
+                class="cursor-pointer text-center p-3 bg-gray-200 hover:bg-gray-300 text-black rounded transition-colors duration-200 border border-black">
                 {{ $specialty->name }}
             </a>
         @endforeach
@@ -45,7 +45,7 @@
     <!-- 新規マニュアル作成ボタン -->
     <div>
         <a href="{{ route('manuals.create') }}"
-           class="cursor-pointer inline-block w-full text-center rounded-lg px-3 py-2 text-sm transition-colors duration-200"
+           class="cursor-pointer inline-block text-center rounded-lg px-3 py-2 text-sm transition-colors duration-200"
            style="background-color: rgba(0, 0, 128, 0.59); color: white;">
             新規マニュアル作成
         </a>
