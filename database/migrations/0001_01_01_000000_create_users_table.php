@@ -14,22 +14,21 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            //追加カラム
+            // 追加カラム
             $table->enum('gender', ['male', 'female', 'non']);
             $table->date('birthday')->nullable();
             $table->string('address')->nullable();
-            //基本カラム
+            // 基本カラム
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
-            //追加カラム
-            $table->timestamp('registered_at')->useCurrent();
-            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
+            // 標準タイムスタンプ（created_at と updated_at）
+            $table->timestamps();
             $table->softDeletes(); // deleted_at カラム
             $table->text('rejection_reason')->nullable();
         });
-        //基本テーブル
+        // 基本テーブル
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
             $table->string('token');

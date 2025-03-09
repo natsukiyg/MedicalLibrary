@@ -15,7 +15,7 @@ class ManualController extends Controller
     {
         //全診療科を取得（例：内科、外科など）
         $specialties = Specialty::all();
-        return view('manuals.specialty.index', compact('specialties'));
+        return view('manuals.specialties.index', compact('specialties'));
     }
 
     //選択した診療科に基づく分類(classifications)一覧のビューを表示する
@@ -25,7 +25,7 @@ class ManualController extends Controller
         $specialty = Specialty::findOrFail($specialtyId);
         //選択された診療科に紐づく分類を取得(specialtyモデルにclassifications()のリレーションが定義されている前提)
         $classifications = $specialty->classifications;
-        return view('manuals.classification.index', compact('specialty', 'classifications'));
+        return view('manuals.classifications.index', compact('specialty', 'classifications'));
     }
 
     //選択した分類に基づく術式(procedures)一覧のビューを表示する
@@ -35,13 +35,16 @@ class ManualController extends Controller
         $classification = Classification::findOrFail($classificationId);
         //Classificationモデルにprocedures()のリレーションが定義されている前提
         $procedures = $classification->procedures;
-        return view('manuals.procedure.index', compact('classification', 'procedures'));
+        return view('manuals.procedures.index', compact('classification', 'procedures'));
     }
 
     //マニュアルの詳細画面を表示する
     public function show($manualId)
     {
         $manual = Manual::findOrFail($manualId);
+        $procedure = $manual->procedure;
+        $classification = $procedure->classification;
+        $specialty = $classification->specialty;
         return view('manuals.show', compact('manual'));
     }
 
@@ -137,4 +140,3 @@ class ManualController extends Controller
         return view('manuals.delete', compact('manual'));
     }
 }
-

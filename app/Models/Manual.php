@@ -8,7 +8,8 @@ class Manual extends Model
 {
     protected $fillable = [
         'title', 'content', 'hospital_id', 'department_id',
-        'specialty_id', 'version', 'updated_by'
+        'specialty_id','classification_id', 'procedure_id',
+        'version', 'created_by', 'updated_by'
     ];
 
     public function hospital()

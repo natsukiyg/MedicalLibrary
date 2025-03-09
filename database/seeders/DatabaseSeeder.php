@@ -19,5 +19,15 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
+
+        // 依存関係のある順番にシーダーを呼び出す
+        $this->call([
+            HospitalSeeder::class,
+            DepartmentSeeder::class,
+            SpecialtySeeder::class,
+            ClassificationSeeder::class,
+            ProcedureSeeder::class,
+            ManualSeeder::class,
+        ]);
     }
 }

@@ -13,6 +13,11 @@ class Specialty extends Model
         return $this->belongsTo(Department::class);
     }
 
+    public function classifications()
+    {
+        return $this->hasMany(Classification::class);
+    }
+
     public function manuals()
     {
         return $this->hasMany(Manual::class);
