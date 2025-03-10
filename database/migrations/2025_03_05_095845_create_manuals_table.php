@@ -18,6 +18,8 @@ return new class extends Migration
             $table->unsignedBigInteger('hospital_id');
             $table->unsignedBigInteger('department_id');
             $table->unsignedBigInteger('specialty_id');
+            $table->unsignedBigInteger('classification_id');
+            $table->unsignedBigInteger('procedure_id')->nullable()->unique();
             $table->integer('version')->default(1);
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('updated_by');
@@ -26,6 +28,8 @@ return new class extends Migration
             $table->foreign('hospital_id')->references('id')->on('hospitals')->onDelete('cascade');
             $table->foreign('department_id')->references('id')->on('departments')->onDelete('cascade');
             $table->foreign('specialty_id')->references('id')->on('specialties')->onDelete('cascade');
+            $table->foreign('classification_id')->references('id')->on('classifications')->onDelete('cascade');
+            $table->foreign('procedure_id')->references('id')->on('procedures')->onDelete('cascade');            
             $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('updated_by')->references('id')->on('users')->onDelete('cascade');
         });

@@ -13,8 +13,8 @@ class Procedure extends Model
         return $this->belongsTo(Classification::class);
     }
 
-    public function manuals()
+    public function manual()
     {
-        return $this->hasMany(Manual::class);
+        return $this->hasOne(Manual::class, 'procedure_id');
     }
 }

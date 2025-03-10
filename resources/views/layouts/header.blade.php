@@ -27,7 +27,7 @@
             </span>
             <form method="POST" action="{{ route('logout') }}" class="inline">
                 @csrf
-                <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
+                <button type="submit" class="px-4 py-2 bg-[rgba(0,0,128,0.59)] text-white rounded hover:bg-[rgba(0,0,128,0.8)]">
                     ログアウト
                 </button>
             </form>

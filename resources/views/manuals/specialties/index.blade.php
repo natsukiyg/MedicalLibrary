@@ -20,24 +20,23 @@
                 $isActive = ($activeSpecialty == $specialty->id);
                 $defaultClasses = 'cursor-pointer block px-6 py-3 rounded transition-colors duration-200 text-black border border-black';
                 $activeClasses = 'bg-[rgba(247,79,191,0.36)]';
-                $inactiveClasses = 'bg-white hover:bg-gray-200';
+                $inactiveClasses = 'bg-white hover:bg-[rgba(247,79,191,0.5)]';
                 $classes = $isActive ? "$defaultClasses $activeClasses" : "$defaultClasses $inactiveClasses";
             @endphp
             <!-- リンク先は、選択された診療科に紐づく分類一覧のページを想定 -->
             <a href="{{ route('manuals.classification.index', $specialty->id) }}"
-                class="cursor-pointer text-center p-3 bg-gray-200 hover:bg-gray-300 text-black rounded transition-colors duration-200 border border-black">
+                class="{{ $classes }} text-center">
                 {{ $specialty->name }}
             </a>
         @endforeach
     </div>
-
+    
     <!-- 検索フォーム -->
     <form action="{{ route('manuals.specialty.index') }}" method="GET" class="mb-6 flex items-center gap-2">
         <input type="text" name="search" placeholder="診療科 / 術式 / 医師名 etc"
                class="border border-gray-300 px-4 py-2 rounded w-3/4 focus:outline-none focus:ring-2 focus:ring-blue-300" 
-               value="{{ request('search') }}">
-        <button type="submit" class="cursor-pointer rounded-lg px-3 py-2 text-sm transition-colors duration-200"
-                style="background-color: rgba(0, 0, 128, 0.59); color: white;">
+            value="{{ request('search') }}">
+        <button type="submit" class="cursor-pointer rounded-lg px-3 py-2 text-sm transition-colors duration-200 bg-[rgba(0,0,128,0.59)] hover:bg-[rgba(0,0,128,0.8)] text-white">
             検索
         </button>
     </form>
@@ -45,8 +44,7 @@
     <!-- 新規マニュアル作成ボタン -->
     <div>
         <a href="{{ route('manuals.create') }}"
-           class="cursor-pointer inline-block text-center rounded-lg px-3 py-2 text-sm transition-colors duration-200"
-           style="background-color: rgba(0, 0, 128, 0.59); color: white;">
+           class="cursor-pointer inline-block text-center rounded-lg px-3 py-2 text-sm transition-colors duration-200 bg-[rgba(0,0,128,0.59)] hover:bg-[rgba(0,0,128,0.8)] text-white">
             新規マニュアル作成
         </a>
     </div>

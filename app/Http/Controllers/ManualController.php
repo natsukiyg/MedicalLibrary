@@ -31,21 +31,24 @@ class ManualController extends Controller
     //選択した分類に基づく術式(procedures)一覧のビューを表示する
     public function procedureIndex($specialtyId, $classificationId)
     {
+        //分類と関連する診療科を取得
+        $specialty = Specialty::findOrFail($specialtyId);
         //分類と関連する術式を取得
         $classification = Classification::findOrFail($classificationId);
         //Classificationモデルにprocedures()のリレーションが定義されている前提
         $procedures = $classification->procedures;
-        return view('manuals.procedures.index', compact('classification', 'procedures'));
+        return view('manuals.procedures.index', compact('specialty','classification', 'procedures'));
     }
 
     //マニュアルの詳細画面を表示する
     public function show($manualId)
     {
         $manual = Manual::findOrFail($manualId);
+        //マニュアルに関連する診療科、分類、術式を取得
         $procedure = $manual->procedure;
         $classification = $procedure->classification;
         $specialty = $classification->specialty;
-        return view('manuals.show', compact('manual'));
+        return view('manuals.show', compact('manual', 'procedure', 'classification', 'specialty'));
     }
 
     //マニュアルの新規作成画面を表示する
