@@ -52,8 +52,8 @@ class FacilityDepartmentRoleController extends Controller
         }
 
         // 処理後のリダイレクト先
-        return redirect()->route('facility-department-role.edit')
-                         ->with('success', '更新しました。');
+        return redirect()->route('dashboard')
+                         ->with('status', '施設 / 部署 / 権限 が更新されました！');
     }
 
     /**

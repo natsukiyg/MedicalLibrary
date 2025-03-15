@@ -13,7 +13,7 @@
     <div class="flex items-center gap-4">
         @guest
             <!-- 未ログイン時：ログインボタン -->
-            <a href="{{ route('login') }}" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+            <a href="{{ route('login') }}" class="px-4 py-2 bg-[rgba(0,0,128,0.59)] text-white rounded hover:bg-[rgba(0,0,128,0.8)]">
                 ログイン
             </a>
         @else

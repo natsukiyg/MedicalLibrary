@@ -2,6 +2,15 @@
 
 @section('content')
 <div class="container mx-auto p-4 bg-white">
+    @if(session('status'))
+        <script>
+            //ページがロードされた時にアラートを表示
+            window.addEventListener('DOMContentLoaded', function(){
+                alert('{{ session('status') }}');
+            });
+        </script>
+    @endif
+    
     <!-- ダッシュボード タイトル -->
     <h1 class="text-2xl font-bold mb-6">ダッシュボード</h1>
 

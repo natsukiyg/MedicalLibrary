@@ -17,14 +17,15 @@
         
         <!-- 施設/部署/権限変更ボタン -->
         <a href="{{ route('facility-department-role.edit') }}"
-            class="block w-full rounded-lg px-4 py-2 mt-4 transition-colors duration-200 bg-[rgba(0,142,20,0.59)] hover:bg-[rgba(0,142,20,0.8)] text-white">
+            class="block w-full rounded-lg px-4 py-2 mt-4 transition-colors duration-200 bg-[rgba(0,142,20,0.59)] hover:bg-[rgba(0,142,20,0.8)] text-white text-center">
             施設/部署/権限変更
         </a>
 
         <!-- 登録情報変更ボタン -->
-        <button class="block w-full rounded-lg px-4 py-2 mt-4 transition-colors duration-200 bg-[rgba(0,142,20,0.59)] hover:bg-[rgba(0,142,20,0.8)] text-white">
+        <a href="{{ route('profile.edit') }}"
+            class="block w-full rounded-lg px-4 py-2 mt-4 transition-colors duration-200 bg-[rgba(0,142,20,0.59)] hover:bg-[rgba(0,142,20,0.8)] text-white text-center">
             登録情報変更
-        </button>
+        </a>
     </div>
 
     <!-- 下部のボタン群 -->
