@@ -5,11 +5,18 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ManualController;
 use App\Http\Controllers\KnowledgeController;
-use App\Http\Controllers\Admin\AdminDashboardController;
-use App\Http\Controllers\Admin\AdminUserController;
-use App\Http\Controllers\Operator\OperatorDashboardController;
 use App\Http\Controllers\FacilityDepartmentRoleController;
 use App\Http\Controllers\UserProfileController;
+use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AdminToolController;
+use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\AdminManualController;
+use App\Http\Controllers\Admin\AdminKnowledgeController;
+use App\Http\Controllers\Operator\OperatorDashboardController;
+use App\Http\Controllers\Operator\OperatorToolController;
+use App\Http\Controllers\Operator\OperatorUserController;
+use App\Http\Controllers\Operator\OperatorManualController;
+use App\Http\Controllers\Operator\OperatorKnowledgeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,34 +53,26 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])
         ->name('profile.destroy');
-    
 
     // ------------------------------
     // マニュアル関連（診療科 → 種類 → 術式 → マニュアル詳細）
     // ------------------------------
-    // 1) 診療科(specialty)一覧 → 選択
     Route::get('/manuals/specialties', [ManualController::class, 'specialtyIndex'])
         ->name('manuals.specialty.index');
-    // 2) 診療科(specialty)を選択した後 → 分類一覧
     Route::get('/manuals/specialties/{specialty}/classifications', [ManualController::class, 'classificationIndex'])
         ->name('manuals.classification.index');
-    // 3) 分類を選択した後 → 術式一覧
     Route::get('/manuals/specialties/{specialty}/classifications/{classification}/procedures', [ManualController::class, 'procedureIndex'])
         ->name('manuals.procedure.index');
-    // 4) 術式を選択した後 → マニュアル詳細画面
     Route::get('/manuals/{manual}', [ManualController::class, 'show'])
         ->name('manuals.show');
-    // 5) マニュアル編集（チームメンバー or 管理者向け）
     Route::get('/manuals/{manual}/edit', [ManualController::class, 'edit'])
         ->name('manuals.edit');
     Route::patch('/manuals/{manual}', [ManualController::class, 'update'])
         ->name('manuals.update');
-    // 6) マニュアル削除（チームメンバー or 管理者向け）
     Route::get('/manuals/{manual}/delete', [ManualController::class, 'confirmDelete'])
         ->name('manuals.delete.confirm');
     Route::delete('/manuals/{manual}', [ManualController::class, 'destroy'])
         ->name('manuals.destroy');
-    // 7) マニュアル新規作成（チームメンバー or 管理者向け）
     Route::get('/manuals/create', [ManualController::class, 'create'])
         ->name('manuals.create');
     Route::post('/manuals', [ManualController::class, 'store'])
@@ -84,10 +83,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // ------------------------------
     Route::resource('knowledges', KnowledgeController::class)
         ->only(['index', 'show', 'create', 'store', 'edit', 'update', 'destroy']);
-    
-    //ナレッジ削除（チームメンバー or 管理者向け）
     Route::get('/knowledges/{knowledge}/delete', [KnowledgeController::class, 'confirmDelete'])
         ->name('knowledges.delete.confirm');
+
+    // ------------------------------
+    // 施設 / 部署 / 権限変更画面
+    // ※ ユーザー向けなので auth, verified で保護
+    // ------------------------------
+    Route::get('/facility-department-role', [FacilityDepartmentRoleController::class, 'edit'])
+         ->name('facility-department-role.edit');
+    Route::post('/facility-department-role', [FacilityDepartmentRoleController::class, 'update'])
+         ->name('facility-department-role.update');
 });
 
 // ------------------------------
@@ -102,6 +108,10 @@ Route::middleware(['auth', 'verified', 'role:admin'])
         // 管理者ダッシュボード
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])
             ->name('dashboard');
+        
+        // 管理者ツール
+        Route::get('/tools', [AdminToolController::class, 'index'])
+            ->name('tools');
 
         // 登録ユーザー一覧
         Route::get('/users', [AdminUserController::class, 'index'])
@@ -115,9 +125,14 @@ Route::middleware(['auth', 'verified', 'role:admin'])
         Route::get('/users/deleted', [AdminUserController::class, 'deleted'])
             ->name('users.deleted');
 
-        // 他に施設・部署の登録・編集など
-        // Route::get('/departments', [...]);
-    });
+        // マニュアル管理
+        Route::get('/manuals', [AdminManualController::class, 'index'])
+            ->name('manuals.index');
+        
+        // ナレッジシェア管理
+        Route::get('/knowledges', [AdminKnowledgeController::class, 'index'])
+            ->name('knowledges.index');
+});
 
 // ------------------------------
 // 運営者向け（全体管理）
@@ -128,18 +143,10 @@ Route::middleware(['auth', 'verified', 'role:operator'])
     ->as('operator.')
     ->group(function () {
 
-        // 運営者ダッシュボード
-        Route::get('/dashboard', [OperatorDashboardController::class, 'index'])
+        // 運営者ツール
+        Route::get('/dashboard', [OperatorToolController::class, 'index'])
             ->name('dashboard');
 
         // 全施設のユーザー管理、操作ログなど
         // Route::get('/all-users', [...]);
     });
-
-// 施設 / 部署 / 権限変更画面
-Route::get('/facility-department-role', [FacilityDepartmentRoleController::class, 'edit'])
-->name('facility-department-role.edit');
-
-// フォーム送信処理
-Route::post('/facility-department-role', [FacilityDepartmentRoleController::class, 'update'])
-->name('facility-department-role.update');

@@ -15,6 +15,10 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
+        // ログイン中のユーザーがadminかどうかをチェック
+        if(! $request->user() || ! $request->user()->isAdmin()) {
+            abort(403, 'このページにアクセスする権限がありません。');
+        }
         return $next($request);
     }
 }
