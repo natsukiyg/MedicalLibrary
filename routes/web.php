@@ -8,6 +8,7 @@ use App\Http\Controllers\KnowledgeController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Operator\OperatorDashboardController;
+use App\Http\Controllers\FacilityDepartmentRoleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -132,3 +133,11 @@ Route::middleware(['auth', 'verified', 'role:operator'])
         // 全施設のユーザー管理、操作ログなど
         // Route::get('/all-users', [...]);
     });
+
+// 施設 / 部署 / 権限変更画面
+Route::get('/facility-department-role', [FacilityDepartmentRoleController::class, 'edit'])
+->name('facility-department-role.edit');
+
+// フォーム送信処理
+Route::post('/facility-department-role', [FacilityDepartmentRoleController::class, 'update'])
+->name('facility-department-role.update');
