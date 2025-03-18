@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class RoleMiddleware
@@ -10,7 +11,7 @@ class RoleMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @param \Closure $next
      * @param string $role
      * @return mixed
@@ -18,7 +19,7 @@ class RoleMiddleware
     public function handle(Request $request, Closure $next, $role)
     {
         $user = $request->user();
-        // ユーザーのロールに応じてアクセス権限を設定
+        // 単純な配列マッピングでロールを定義
         $roleMapping = [
             'staff'       => 0,
             'team_member' => 1,
@@ -26,10 +27,12 @@ class RoleMiddleware
             'operator'    => 3,
         ];
         $requiredRole = $roleMapping[$role] ?? null;
-        // ユーザーが存在し、userHospitalが存在し、roleが一致するかチェック
+
+        // ユーザーが存在し、userHospital が存在し、role 属性（整数としてキャスト済み）が一致するかチェック
         if ($user && $user->userHospital && $user->userHospital->role == $requiredRole) {
             return $next($request);
         }
+
         abort(403, 'このページにアクセスする権限がありません。');
     }
 }

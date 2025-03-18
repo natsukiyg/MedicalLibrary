@@ -12,17 +12,26 @@ use App\Http\Controllers\Admin\AdminToolController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminManualController;
 use App\Http\Controllers\Admin\AdminKnowledgeController;
-use App\Http\Controllers\Operator\OperatorDashboardController;
 use App\Http\Controllers\Operator\OperatorToolController;
-use App\Http\Controllers\Operator\OperatorUserController;
-use App\Http\Controllers\Operator\OperatorManualController;
-use App\Http\Controllers\Operator\OperatorKnowledgeController;
+
 
 /*
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
 */
+// デバッグ用
+/* Route::get('/debug-middleware', function () {
+    dd(app('router')->getMiddleware());
+}); */
+Route::get('/debug-middleware', function () {
+    return response()->json(app('router')->getMiddleware());
+});
+/* Route::get('/debug-middleware', function () {
+    return response()->json([
+        'role' => app('router')->getMiddleware()['role'] ?? 'not found',
+    ]);
+}); */
 
 // ------------------------------
 // トップページ（公開）
@@ -100,6 +109,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 // 管理者向け（施設/部署の管理者）
 // role:admin ミドルウェアで管理者判定
 // ------------------------------
+/* Route::middleware(['auth', 'verified', function($request, $next) {
+    return (new \App\Http\Middleware\RoleMiddleware)->handle($request, $next, 'admin');
+}]) */
 Route::middleware(['auth', 'verified', 'role:admin'])
     ->prefix('admin')
     ->as('admin.')
@@ -134,7 +146,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])
             ->name('knowledges.index');
 });
 
-// ------------------------------
+/* // ------------------------------
 // 運営者向け（全体管理）
 // role:operator ミドルウェアで運営者判定
 // ------------------------------
@@ -150,3 +162,4 @@ Route::middleware(['auth', 'verified', 'role:operator'])
         // 全施設のユーザー管理、操作ログなど
         // Route::get('/all-users', [...]);
     });
+ */
