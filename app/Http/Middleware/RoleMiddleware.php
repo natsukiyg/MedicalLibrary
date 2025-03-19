@@ -16,7 +16,7 @@ class RoleMiddleware
      * @param string $role
      * @return mixed
      */
-    public function handle(Request $request, Closure $next, $role)
+    public function handle($request, Closure $next, $role)
     {
         $user = $request->user();
         // 単純な配列マッピングでロールを定義
@@ -29,10 +29,10 @@ class RoleMiddleware
         $requiredRole = $roleMapping[$role] ?? null;
 
         // ユーザーが存在し、userHospital が存在し、role 属性（整数としてキャスト済み）が一致するかチェック
-        if ($user && $user->userHospital && $user->userHospital->role == $requiredRole) {
-            return $next($request);
+        if (!Auth::check() || !Auth::user()->hasRole($role)) {
+            abort(403, 'Unauthorized');
         }
 
-        abort(403, 'このページにアクセスする権限がありません。');
+        return $next($request);
     }
 }

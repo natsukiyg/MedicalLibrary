@@ -24,6 +24,26 @@ class User extends Authenticatable
     ];
 
     /**
+     * ユーザーが特定のロールを持っているかどうかを確認するメソッド。
+     *
+     * @param string $role
+     * @return bool
+     */
+    public function hasRole($role)
+    {
+        // ユーザーのロールを確認するロジックを実装
+        // ここでは、ユーザーの role 属性がロールマッピングのキーと一致するかを確認します
+        $roleMapping = [
+            'staff'       => 0,
+            'team_member' => 1,
+            'admin'       => 2,
+            'operator'    => 3,
+        ];
+
+        return $this->role === ($roleMapping[$role] ?? null);
+    }
+
+    /**
      * The attributes that should be hidden for serialization.
      *
      * @var list<string>
