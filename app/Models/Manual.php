@@ -2,14 +2,18 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Manual extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'title', 'content', 'hospital_id', 'department_id',
-        'specialty_id','classification_id', 'procedure_id',
-        'version', 'created_by', 'updated_by'
+        'specialty_id', 'classification_id', 'procedure_id',
+        'version', 'created_by', 'updated_by',
+        'files', 'editable_files'
     ];
 
     public function hospital()
@@ -46,4 +50,5 @@ class Manual extends Model
     {
         return $this->belongsTo(User::class, 'updated_by');
     }
+    
 }

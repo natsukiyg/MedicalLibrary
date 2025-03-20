@@ -66,6 +66,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // ------------------------------
     // マニュアル関連（診療科 → 種類 → 術式 → マニュアル詳細）
     // ------------------------------
+    Route::get('/manuals/create', [ManualController::class, 'create'])
+        ->name('manuals.create');    
+    Route::post('/manuals', [ManualController::class, 'store'])
+        ->name('manuals.store');
     Route::get('/manuals/specialties', [ManualController::class, 'specialtyIndex'])
         ->name('manuals.specialty.index');
     Route::get('/manuals/specialties/{specialty}/classifications', [ManualController::class, 'classificationIndex'])
@@ -76,16 +80,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('manuals.show');
     Route::get('/manuals/{manual}/edit', [ManualController::class, 'edit'])
         ->name('manuals.edit');
-    Route::patch('/manuals/{manual}', [ManualController::class, 'update'])
+    Route::PUT('/manuals/{manual}', [ManualController::class, 'update'])
         ->name('manuals.update');
     Route::get('/manuals/{manual}/delete', [ManualController::class, 'confirmDelete'])
         ->name('manuals.delete.confirm');
     Route::delete('/manuals/{manual}', [ManualController::class, 'destroy'])
         ->name('manuals.destroy');
-    Route::get('/manuals/create', [ManualController::class, 'create'])
-        ->name('manuals.create');
-    Route::post('/manuals', [ManualController::class, 'store'])
-        ->name('manuals.store');
 
     // ------------------------------
     // ナレッジ関連（同様にリソースルートや段階的画面を用意）
@@ -163,3 +163,11 @@ Route::middleware(['auth', 'verified', 'role:operator'])
         // Route::get('/all-users', [...]);
     });
  */
+
+ Route::middleware('api')->group(function() {
+    // 診療科ごとの分類を取得するAPI
+    Route::get('/classifications/{specialtyId}', [ManualController::class, 'getClassifications']);
+
+    // 分類ごとの術式を取得するAPI
+    Route::get('/procedures/{classificationId}', [ManualController::class, 'getProcedures']);
+});

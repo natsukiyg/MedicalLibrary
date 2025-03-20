@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -42,9 +43,13 @@ class AppServiceProvider extends ServiceProvider
                 // $user_role = $user->role ?? '〇〇〇〇';
             }
     
-            $view->with('hospitalName', $hospitalName);
+/*             $view->with('hospitalName', $hospitalName);
             $view->with('departmentName', $departmentName);
-            $view->with('user_role', $user_role);
+            $view->with('user_role', $user_role); */
+        });
+
+        Gate::define('edit-manual', function ($user) {
+          return in_array($user->userHospital->role ?? null, [1,2,3]);
         });
     }
 }

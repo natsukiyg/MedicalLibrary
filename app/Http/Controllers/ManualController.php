@@ -62,29 +62,46 @@ class ManualController extends Controller
     //マニュアルの新規作成処理を行う
     public function store(Request $request)
     {
-        //バリデーションルールを定義
-        $data = $request->validate([
+        // バリデーション
+        $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'content' => 'required|string',
-            'specialty_id' => 'required|exists:specialties,id',
-            'classification_id' => 'required|exists:classifications,id',
-            'procedure_id' => 'required|exists:procedures,id',
+            'files' => 'nullable|array',
+            'files.*' => 'nullable|url',
+            'editable_files' => 'nullable|array',
+            'editable_files.*' => 'nullable|url',
         ]);
-
-        //マニュアルを新規作成
-        $manual = new Manual();
-        $manual->title = $request->title;
-        $manual->content = $request->content;
-        $manual->specialty_id = $request->specialty_id;
-        $manual->classification_id = $request->classification_id;
-        $manual->procedure_id = $request->procedure_id;
-        $manual->created_by = $request->user()->id;
-        $manual->updated_by = $request->user()->id;
-        $manual->save();
-        //マニュアルの詳細画面にリダイレクト
-        return redirect()->route('manuals.show', $manual->id)
-                         ->with('success', 'マニュアルを作成しました');
-    }
+    
+        // ファイル情報を処理（名前を自動取得）
+        $viewOnlyFiles = [];
+        foreach ($validated['files'] ?? [] as $fileUrl) {
+            $fileName = basename(parse_url($fileUrl, PHP_URL_PATH));
+            $viewOnlyFiles[] = ['name' => $fileName, 'url' => $fileUrl];
+        }
+    
+        $editableFiles = [];
+        foreach ($validated['editable_files'] ?? [] as $fileUrl) {
+            $fileName = basename(parse_url($fileUrl, PHP_URL_PATH));
+            $editableFiles[] = ['name' => $fileName, 'url' => $fileUrl];
+        }
+    
+        // 新しいマニュアルを作成
+        Manual::create([
+            'title' => $validated['title'],
+            'content' => '', // 必要なら追加
+            'hospital_id' => auth()->user()->hospital_id, // ユーザーの所属病院
+            'department_id' => auth()->user()->department_id ?? null,
+            'specialty_id' => null,
+            'classification_id' => null,
+            'procedure_id' => null,
+            'version' => 1.0,
+            'created_by' => auth()->id(),
+            'updated_by' => auth()->id(),
+            'files' => json_encode($viewOnlyFiles),
+            'editable_files' => json_encode($editableFiles),
+        ]);
+    
+        return redirect()->route('manuals.index')->with('success', '新しいマニュアルを作成しました！');
+    }    
 
     //マニュアルの編集画面を表示する
     public function edit($manualId)
@@ -96,30 +113,46 @@ class ManualController extends Controller
     }
 
     //マニュアルの更新処理を行う
+
     public function update(Request $request, $manualId)
     {
-        //バリデーションルールを定義
-        $data = $request->validate([
+        // バリデーションルールを定義
+        $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'content' => 'required|string',
-            'specialty_id' => 'required|exists:specialties,id',
-            'classification_id' => 'required|exists:classifications,id',
-            'procedure_id' => 'required|exists:procedures,id',
+            'content' => 'nullable|string',
+            'specialty_id' => 'nullable|integer|exists:specialties,id',
+            'classification_id' => 'nullable|integer|exists:classifications,id',
+            'procedure_id' => 'nullable|integer|exists:procedures,id',
+            'editable_files' => 'nullable|array',
+            'editable_files.*' => 'nullable|url',
         ]);
 
-        //更新対象のマニュアルを取得
+        // 更新対象のマニュアルを取得
         $manual = Manual::findOrFail($manualId);
-        $manual->title = $request->title;
-        $manual->content = $request->content;
-        $manual->specialty_id = $request->specialty_id;
-        $manual->classification_id = $request->classification_id;
-        $manual->procedure_id = $request->procedure_id;
-        $manual->updated_by = $request->user()->id;
-        $manual->save();
 
-        $manual->update($data);
+        // ファイル情報を処理（URLからファイル名を取得）
+        $editableFiles = [];
+        if (!empty($validated['editable_files'])) {
+            foreach ($validated['editable_files'] as $fileUrl) {
+                if (!empty($fileUrl)) { // 空の値を除外
+                    $fileName = basename(parse_url($fileUrl, PHP_URL_PATH));
+                    $editableFiles[] = ['name' => $fileName, 'url' => $fileUrl];
+                }
+            }
+        }
 
-        //マニュアルの詳細画面にリダイレクト
+        // マニュアル情報を更新
+        $manual->update([
+            'title' => $validated['title'],
+            'content' => $validated['content'] ?? $manual->content,
+            'specialty_id' => $validated['specialty_id'] ?? $manual->specialty_id,
+            'classification_id' => $validated['classification_id'] ?? $manual->classification_id,
+            'procedure_id' => $validated['procedure_id'] ?? $manual->procedure_id,
+            'updated_by' => $request->user()->id,
+            'editable_files' => json_encode($editableFiles), // JSON形式で保存
+        ]);
+
+        // マニュアルの詳細画面にリダイレクト
         return redirect()->route('manuals.show', $manual->id)
                          ->with('success', 'マニュアルを更新しました');
     }
@@ -142,4 +175,23 @@ class ManualController extends Controller
         //確認画面用のビューを返す
         return view('manuals.delete', compact('manual'));
     }
+
+    // 診療科ごとの分類(classifications)を取得するAPI（JSONレスポンス）
+    public function getClassifications($specialtyId)
+    {
+        $specialty = Specialty::findOrFail($specialtyId);
+        $classifications = $specialty->classifications;
+
+        return response()->json($classifications);
+    }
+
+    // 分類ごとの術式(procedures)を取得するAPI（JSONレスポンス）
+    public function getProcedures($classificationId)
+    {
+        $classification = Classification::findOrFail($classificationId);
+        $procedures = $classification->procedures;
+
+        return response()->json($procedures);
+    }
+
 }

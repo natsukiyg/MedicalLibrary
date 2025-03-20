@@ -1,0 +1,18 @@
+[90m= [39m[34;4mApp\Models\Manual[39;24m {#6276
+    [34mid[39m: [35m1[39m,
+    [34mtitle[39m: "[32m胸腔鏡補助下肺切除術マニュアル[39m",
+    [34mcontent[39m: "[32mマニュアルの詳細内容[39m",
+    [34mhospital_id[39m: [35m1[39m,
+    [34mdepartment_id[39m: [35m1[39m,
+    [34mspecialty_id[39m: [35m1[39m,
+    [34mclassification_id[39m: [35m1[39m,
+    [34mprocedure_id[39m: [35m1[39m,
+    [34mversion[39m: [35m1[39m,
+    [34mcreated_by[39m: [35m1[39m,
+    [34mupdated_by[39m: [35m1[39m,
+    [34mcreated_at[39m: "[32m2025-03-20 17:06:29[39m",
+    [34mupdated_at[39m: "[32m2025-03-20 18:07:52[39m",
+    [34mfiles[39m: "[32m[{"url": "https://1drv.ms/x/c/e9063c3cba030461/EWdHl2zj9H1NieCyE3Xh7tMBL0EH075DCF124Gp4QlIL0Q?e=8e7L2P", "name": "呼吸器外科VATSマニュアルサンプル.xlsx"}][39m",
+    [34meditable_files[39m: "[32m[{"url": "https://1drv.ms/x/c/e9063c3cba030461/EWdHl2zj9H1NieCyE3Xh7tMBVPlaS3uGfNn-ihtLFuls7A?e=ropgK9", "name": "呼吸器外科VATSマニュアルサンプル.xlsx"}][39m",
+  }
+
