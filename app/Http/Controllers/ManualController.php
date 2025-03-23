@@ -65,11 +65,14 @@ class ManualController extends Controller
         // バリデーション
         $validated = $request->validate([
             'title' => 'required|string|max:255',
+            'specialty_id' => 'required|exists:specialties,id',
+            'classification_id' => 'required|exists:classifications,id',
+            'procedure_id' => 'required|exists:procedures,id',
             'files' => 'nullable|array',
             'files.*' => 'nullable|url',
             'editable_files' => 'nullable|array',
             'editable_files.*' => 'nullable|url',
-        ]);
+        ]);        
     
         // ファイル情報を処理（名前を自動取得）
         $viewOnlyFiles = [];
@@ -85,14 +88,15 @@ class ManualController extends Controller
         }
     
         // 新しいマニュアルを作成
+        $userHospital = auth()->user()->userHospital;
         Manual::create([
             'title' => $validated['title'],
             'content' => '', // 必要なら追加
-            'hospital_id' => auth()->user()->hospital_id, // ユーザーの所属病院
-            'department_id' => auth()->user()->department_id ?? null,
-            'specialty_id' => null,
-            'classification_id' => null,
-            'procedure_id' => null,
+            'hospital_id' => $userHospital?->hospital_id,
+            'department_id' => $userHospital?->department_id,
+            'specialty_id' => $validated['specialty_id'],
+            'classification_id' => $validated['classification_id'],
+            'procedure_id' => $validated['procedure_id'],
             'version' => 1.0,
             'created_by' => auth()->id(),
             'updated_by' => auth()->id(),
@@ -109,6 +113,7 @@ class ManualController extends Controller
         $manual = Manual::findOrFail($manualId);
         //編集フォームで診療科一覧などを表示するためのデータを取得
         $specialties = Specialty::all();
+        $manual->files_array = json_decode($manual->files, true) ?? [];
         return view('manuals.edit', compact('manual', 'specialties'));
     }
 
@@ -124,20 +129,37 @@ class ManualController extends Controller
             'classification_id' => 'nullable|integer|exists:classifications,id',
             'procedure_id' => 'nullable|integer|exists:procedures,id',
             'editable_files' => 'nullable|array',
-            'editable_files.*' => 'nullable|url',
+            'editable_files.*.name' => 'nullable|string',
+            'editable_files.*.url' => 'nullable|url',
+            'editable_files.*.view_url' => 'nullable|url',
         ]);
 
         // 更新対象のマニュアルを取得
         $manual = Manual::findOrFail($manualId);
 
-        // ファイル情報を処理（URLからファイル名を取得）
+        // ファイル情報を処理：editable_filesからview_urlを抽出
+        $viewOnlyFiles = [];
+        foreach ($validated['editable_files'] ?? [] as $file) {
+            if (!empty($file['name']) && !empty($file['view_url'])) {
+                $viewOnlyFiles[] = [
+                    'name' => $file['name'],
+                    'url' => $file['view_url'],
+                ];
+            }
+        }
+        
         $editableFiles = [];
-        if (!empty($validated['editable_files'])) {
-            foreach ($validated['editable_files'] as $fileUrl) {
-                if (!empty($fileUrl)) { // 空の値を除外
-                    $fileName = basename(parse_url($fileUrl, PHP_URL_PATH));
-                    $editableFiles[] = ['name' => $fileName, 'url' => $fileUrl];
-                }
+        foreach ($validated['editable_files'] as $file) {
+            $name = $file['name'] ?? '';
+            if (empty($name) && !empty($file['url'])) {
+                $name = basename(parse_url($file['url'], PHP_URL_PATH));
+            }
+
+            if (!empty($name) && !empty($file['url'])) {
+                $editableFiles[] = [
+                    'name' => $name,
+                    'url' => $file['url'],
+                ];
             }
         }
 
@@ -149,6 +171,7 @@ class ManualController extends Controller
             'classification_id' => $validated['classification_id'] ?? $manual->classification_id,
             'procedure_id' => $validated['procedure_id'] ?? $manual->procedure_id,
             'updated_by' => $request->user()->id,
+            'files' => json_encode($viewOnlyFiles), // JSON形式で保存
             'editable_files' => json_encode($editableFiles), // JSON形式で保存
         ]);
 

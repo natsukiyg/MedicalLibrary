@@ -66,6 +66,11 @@ class User extends Authenticatable
         ];
     }
 
+    public function hospitals()
+    {
+        return $this->belongsToMany(Hospital::class, 'user_hospital');
+    }
+
     public function userHospital()
     {
         return $this->hasOne(UserHospital::class);

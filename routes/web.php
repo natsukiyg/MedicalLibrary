@@ -70,6 +70,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('manuals.create');    
     Route::post('/manuals', [ManualController::class, 'store'])
         ->name('manuals.store');
+    Route::get('/manuals', [ManualController::class, 'specialtyIndex'])
+        ->name('manuals.index');
     Route::get('/manuals/specialties', [ManualController::class, 'specialtyIndex'])
         ->name('manuals.specialty.index');
     Route::get('/manuals/specialties/{specialty}/classifications', [ManualController::class, 'classificationIndex'])
@@ -164,10 +166,10 @@ Route::middleware(['auth', 'verified', 'role:operator'])
     });
  */
 
- Route::middleware('api')->group(function() {
+ Route::middleware(['web'])->group(function() {
     // 診療科ごとの分類を取得するAPI
-    Route::get('/classifications/{specialtyId}', [ManualController::class, 'getClassifications']);
+    Route::get('/classifications/{specialty}', [ManualController::class, 'getClassifications']);
 
     // 分類ごとの術式を取得するAPI
-    Route::get('/procedures/{classificationId}', [ManualController::class, 'getProcedures']);
+    Route::get('/procedures/{classification}', [ManualController::class, 'getProcedures']);
 });

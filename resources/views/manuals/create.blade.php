@@ -44,14 +44,6 @@
                    class="mt-1 p-2 border border-gray-300 rounded w-full">
         </div>
 
-        <!-- 閲覧専用ファイルのURL -->
-        <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700">閲覧専用ファイルURL</label>
-            <div id="view-only-file-container"></div>
-            <button type="button" id="add-view-only-file"
-                    class="bg-[rgba(0,142,20,0.59)] hover:bg-[rgba(0,142,20,0.8)] text-white px-3 py-1 rounded mt-2">+ ファイル追加</button>
-        </div>
-
         <!-- 編集可能なファイルのURL -->
         <div class="mb-4">
             <label class="block text-sm font-medium text-gray-700">編集可能ファイルURL</label>
@@ -80,7 +72,7 @@
         procedureSelect.disabled = true;
 
         if (specialtyId) {
-            fetch(`/api/classifications/${specialtyId}`)
+            fetch(`/classifications/${specialtyId}`)
                 .then(response => response.json())
                 .then(data => {
                     classificationSelect.innerHTML = '<option value="">選択してください</option>';
@@ -101,7 +93,7 @@
         procedureSelect.disabled = true;
 
         if (classificationId) {
-            fetch(`/api/procedures/${classificationId}`)
+            fetch(`/procedures/${classificationId}`)
                 .then(response => response.json())
                 .then(data => {
                     procedureSelect.innerHTML = '<option value="">選択してください</option>';
@@ -114,24 +106,34 @@
     });
 
     // ファイル追加機能
-    function addFileInput(containerId, inputName) {
-        let container = document.getElementById(containerId);
-        let newInput = document.createElement('div');
-        newInput.classList.add('flex', 'items-center', 'gap-2', 'mb-2');
+    function addFileInput(containerId) {
+        const container = document.getElementById(containerId);
+        const index = container.children.length;
+
+        const newInput = document.createElement('div');
+        newInput.classList.add('mb-4', 'p-2', 'border', 'border-gray-200', 'rounded');
+
         newInput.innerHTML = `
-            <input type="text" name="${inputName}[]" value="" placeholder="ファイルURLを入力"
+            <label class="block text-sm font-medium text-gray-700">ファイル名</label>
+            <input type="text" name="editable_files[${index}][name]" placeholder="ファイル名を入力"
+                   class="mt-1 p-2 border border-gray-300 rounded w-full mb-2">
+
+            <label class="block text-sm font-medium text-gray-700">編集用URL</label>
+            <input type="text" name="editable_files[${index}][url]" placeholder="編集用URLを入力"
+                   class="mt-1 p-2 border border-gray-300 rounded w-full mb-2">
+
+            <label class="block text-sm font-medium text-gray-700">閲覧用URL</label>
+            <input type="text" name="editable_files[${index}][view_url]" placeholder="閲覧用URLを入力"
                    class="mt-1 p-2 border border-gray-300 rounded w-full">
-            <button type="button" class="remove-file bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded">✕</button>
+
+            <button type="button" class="remove-file bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded mt-2">✕</button>
         `;
+
         container.appendChild(newInput);
     }
 
-    document.getElementById('add-view-only-file').addEventListener('click', function() {
-        addFileInput('view-only-file-container', 'files');
-    });
-
-    document.getElementById('add-editable-file').addEventListener('click', function() {
-        addFileInput('editable-file-container', 'editable_files');
+    document.getElementById('add-editable-file').addEventListener('click', function () {
+        addFileInput('editable-file-container');
     });
 
     document.addEventListener('click', function(e) {

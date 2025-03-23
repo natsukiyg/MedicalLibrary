@@ -14,9 +14,9 @@
             <input type="text" name="title" value="{{ old('title', $manual->title) }}" class="mt-1 p-2 border border-gray-300 rounded w-full">
         </div>
 
-        <!-- 編集可能なファイルURL -->
+        <!-- ファイルの閲覧・編集用URL -->
         <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700">編集可能なファイルURL</label>
+            <label class="block text-sm font-medium text-gray-700">ファイルの閲覧・編集用URL</label>
 
             <div id="file-input-container">
                 @php
@@ -25,14 +25,11 @@
 
                 @foreach ($editableFiles as $index => $file)
                 <div class="file-entry flex items-center gap-2 mb-2" data-index="{{ $index }}">
-                 <!-- 通常表示（ファイル名 + 編集ボタン + 削除ボタン） -->
                     <div class="file-view flex justify-between items-center bg-white shadow-md rounded-lg p-4 border border-gray-200 w-full">
-                    <!-- 左側（ファイル名） -->
                         <span class="text-black font-medium flex-1">
                             📂  {{ $file['name'] ?? '不明なファイル' }}
                         </span>
 
-                    <!-- 右側（ボタンたち） -->
                         <div class="flex gap-4">
                             <a href="{{ $file['url'] ?? '#' }}" target="_blank"
                                class="file-link text-blue-500 underline hover:text-blue-700 truncate"
@@ -49,26 +46,46 @@
                                 ✕ 削除
                             </button>
                         </div>
-                
-                        <!-- 編集モード（URL入力 + キャンセル） -->
-                        <div class="file-edit hidden w-full">
-                            <input type="text" name="editable_files[]" value="{{ $file['url'] }}" 
-                                   class="mt-1 p-2 border border-gray-300 rounded w-full">
-                            <div class="flex gap-2 mt-2">
-                                <button type="button" class="cancel-edit bg-gray-400 hover:bg-gray-500 text-white px-2 py-1 rounded">✖ キャンセル</button>
-                            </div>
+                    </div>
+
+                    <div class="file-edit hidden w-full">
+                        <input type="hidden" name="editable_files[{{ $index }}][name]" value="{{ $file['name'] ?? '' }}">
+                        <input type="text" name="editable_files[{{ $index }}][url]" value="{{ $file['url'] ?? '' }}" 
+                               class="mt-1 p-2 border border-gray-300 rounded w-full">
+                        @php
+                            $matchingViewUrl = '';
+                            foreach ($manual->files_array ?? [] as $viewFile) {
+                                if (($viewFile['name'] ?? '') === ($file['name'] ?? '')) {
+                                    $matchingViewUrl = $viewFile['url'] ?? '';
+                                    break;
+                                }
+                            }
+                        @endphp
+                        <input type="text" name="editable_files[{{ $index }}][view_url]" value="{{ $matchingViewUrl }}" 
+                               class="mt-1 p-2 border border-gray-300 rounded w-full" placeholder="閲覧用URL（任意）">
+                        <div class="flex gap-2 mt-2">
+                            <button type="button" class="cancel-edit bg-gray-400 hover:bg-gray-500 text-white px-2 py-1 rounded">✖ キャンセル</button>
                         </div>
                     </div>
+                </div>
                 @endforeach
             </div>
 
-            <!-- 追加ボタン -->
-            <button type="button" id="add-file" class="bg-[rgba(0,0,128,0.59)] hover:bg-[rgba(0,0,128,0.8)] text-white px-3 py-1 rounded mt-2">+ 追加</button>
         </div>
 
-        <button type="submit" class="bg-[rgba(0,0,128,0.59)] hover:bg-[rgba(0,0,128,0.8)] text-white px-4 py-2 rounded mt-4">
-            保存する
-        </button>
+        <div class="mt-6 flex flex-col items-start gap-2 text-sm">
+            <button type="button" id="add-file" class="bg-[rgba(0,0,128,0.59)] hover:bg-[rgba(0,0,128,0.8)] text-white px-2 py-1 rounded">
+                + 追加
+            </button>
+
+            <button type="submit" class="bg-[rgba(0,0,128,0.59)] hover:bg-[rgba(0,0,128,0.8)] text-white px-2 py-1 rounded">
+                保存する
+            </button>
+
+            <a href="{{ route('manuals.show', $manual->id) }}" class="text-center bg-gray-300 hover:bg-gray-400 text-black px-2 py-1 rounded">
+                ← 戻る
+            </a>
+        </div>
     </form>
 </div>
 
@@ -89,11 +106,16 @@
 
         // 「✖ キャンセル」ボタンが押された場合（元に戻す）
         if (e.target.classList.contains('cancel-edit')) {
-            let viewContainer = entry.querySelector('.file-view');
-            let editContainer = entry.querySelector('.file-edit');
+            const isNew = entry.querySelector('input[name$="[url]"]').value === '';
+            if (isNew) {
+                entry.remove();
+            } else {
+                let viewContainer = entry.querySelector('.file-view');
+                let editContainer = entry.querySelector('.file-edit');
 
-            viewContainer.classList.remove('hidden'); // 元のファイル名+編集ボタンを復活
-            editContainer.classList.add('hidden'); // 入力フィールドを非表示
+                viewContainer.classList.remove('hidden'); // 元のファイル名+編集ボタンを復活
+                editContainer.classList.add('hidden'); // 入力フィールドを非表示
+            }
         }
 
         // 「✕ 削除」ボタンが押された場合（リストから削除）
@@ -104,13 +126,15 @@
 
     // 新しいURLを追加するボタン
     document.getElementById('add-file').addEventListener('click', function() {
-        let container = document.getElementById('file-input-container');
-        let index = document.querySelectorAll('.file-entry').length; // 新しい index を決定
-        let newInput = document.createElement('div');
-        newInput.classList.add('file-entry', 'flex', 'items-center', 'gap-2', 'mb-2');
-        newInput.setAttribute('data-index', index);
-        newInput.innerHTML = `
-            <div class="file-view flex items-center justify-between bg-white shadow-md rounded-lg p-4 border border-gray-200 w-full">
+        const container = document.getElementById('file-input-container');
+        const index = document.querySelectorAll('.file-entry').length; // 新しい index を決定
+
+        const wrapper = document.createElement('div');
+        wrapper.classList.add('file-entry', 'flex', 'flex-col', 'gap-2', 'mb-2');
+        wrapper.setAttribute('data-index', index);
+
+        wrapper.innerHTML = `
+            <div class="file-view hidden flex items-center justify-between bg-white shadow-md rounded-lg p-4 border border-gray-200 w-full">
                 <span class="text-black font-medium truncate">
                     📂 新しいファイル
                 </span>
@@ -123,15 +147,20 @@
                 </button>
             </div>
 
-            <div class="file-edit hidden w-full">
-                <input type="text" name="editable_files[]" value="" 
-                       class="mt-1 p-2 border border-gray-300 rounded w-full">
+            <div class="file-edit w-full">
+                <input type="text" name="editable_files[${index}][name]" value=""
+                       class="mt-1 p-2 border border-gray-300 rounded w-full" placeholder="ファイル名">
+                <input type="text" name="editable_files[${index}][url]" value=""
+                       class="mt-1 p-2 border border-gray-300 rounded w-full" placeholder="編集用URL">
+                <input type="text" name="editable_files[${index}][view_url]" value=""
+                       class="mt-1 p-2 border border-gray-300 rounded w-full" placeholder="閲覧用URL">
                 <div class="flex gap-2 mt-2">
                     <button type="button" class="cancel-edit bg-gray-400 hover:bg-gray-500 text-white px-2 py-1 rounded">✖ キャンセル</button>
                 </div>
             </div>
         `;
-        container.appendChild(newInput);
+
+        container.appendChild(wrapper);
     });
 </script>
 

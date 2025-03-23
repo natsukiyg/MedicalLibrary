@@ -52,7 +52,7 @@
                         </span>
                         <a href="{{ $file['url'] ?? '#' }}" target="_blank"
                            class="inline-block text-center px-4 py-2 rounded-lg border border-black bg-[rgba(0,142,20,0.59)] text-white hover:bg-[rgba(0,142,20,0.8)] transition-colors duration-200">
-                            📄 閲覧する
+                            📄 参照
                         </a>
                     </div>
                 @endforeach

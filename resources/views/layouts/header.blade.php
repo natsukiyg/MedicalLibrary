@@ -1,3 +1,4 @@
+@if (Route::has('login'))
 <header class="bg-white dark:bg-gray-800 shadow p-4 flex justify-between items-center">
     <div class="flex flex-col">
         <!-- サブタイトル -->
@@ -11,15 +12,9 @@
     </div>
 
     <div class="flex items-center gap-4">
-        @guest
-            <!-- 未ログイン時：ログインボタン -->
-            <a href="{{ route('login') }}" class="px-4 py-2 bg-[rgba(0,0,128,0.59)] text-white rounded hover:bg-[rgba(0,0,128,0.8)]">
-                ログイン
-            </a>
-        @else
+        @auth
             <!-- ログイン時：アイコン丸＋ユーザー名＋ログアウトボタン -->
             <div class="w-8 h-8 bg-gray-300 rounded-full overflow-hidden flex items-center justify-center">
-                <!-- ここにアイコン画像がある場合は <img> タグを入れる -->
                 <!-- <img src="{{ Auth::user()->avatar_url }}" alt="User Icon" class="w-8 h-8" /> -->
             </div>
             <span class="text-gray-700 dark:text-gray-200">
@@ -31,6 +26,12 @@
                     ログアウト
                 </button>
             </form>
-        @endguest
+        @else
+            <!-- 未ログイン時：ログインボタン -->
+            <a href="{{ route('login') }}" class="px-4 py-2 bg-[rgba(0,0,128,0.59)] text-white rounded hover:bg-[rgba(0,0,128,0.8)]">
+                ログイン
+            </a>
+        @endauth
     </div>
 </header>
+@endif
