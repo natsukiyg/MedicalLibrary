@@ -1,0 +1,10 @@
+RewriteEngine On
+
+# MedicalLibrary/ にアクセスが来たら public/ にリダイレクト
+RewriteRule ^$ public/ [L]
+
+# それ以外もすべて public/ にルーティング
+RewriteRule (.*) public/$1 [L]
+
+# index.php を明示的に入口に指定
+DirectoryIndex index.php
