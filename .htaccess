@@ -1,10 +1,11 @@
-RewriteEngine On
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /MedicalLibrary/
 
-# MedicalLibrary/ にアクセスが来たら public/ にリダイレクト
-RewriteRule ^$ public/ [L]
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
 
-# それ以外もすべて public/ にルーティング
-RewriteRule (.*) public/$1 [L]
+    RewriteRule ^ index.php [L]
+</IfModule>
 
-# index.php を明示的に入口に指定
 DirectoryIndex index.php
