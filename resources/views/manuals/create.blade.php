@@ -72,7 +72,7 @@
         procedureSelect.disabled = true;
 
         if (specialtyId) {
-            fetch(`/classifications/${specialtyId}`)
+            fetch(`/MedicalLibrary/classifications/${specialtyId}`)
                 .then(response => response.json())
                 .then(data => {
                     classificationSelect.innerHTML = '<option value="">選択してください</option>';
@@ -93,7 +93,7 @@
         procedureSelect.disabled = true;
 
         if (classificationId) {
-            fetch(`/procedures/${classificationId}`)
+            fetch(`/MedicalLibrary/procedures/${classificationId}`)
                 .then(response => response.json())
                 .then(data => {
                     procedureSelect.innerHTML = '<option value="">選択してください</option>';
