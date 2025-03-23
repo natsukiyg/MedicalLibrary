@@ -37,7 +37,7 @@ Route::get('/debug-middleware', function () {
 // トップページ（公開）
 // ------------------------------
 Route::get('/', function () {
-    return view('welcome');
+    return 'OK!';
 })->name('welcome');
 
 // ------------------------------
