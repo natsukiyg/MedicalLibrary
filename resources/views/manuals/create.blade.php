@@ -60,6 +60,8 @@
 </div>
 
 <script>
+    const baseUrl = "{{ url('') }}";
+
     // 診療科選択時に分類を取得
     document.getElementById('specialty').addEventListener('change', function() {
         let specialtyId = this.value;
@@ -72,7 +74,7 @@
         procedureSelect.disabled = true;
 
         if (specialtyId) {
-            fetch(`/MedicalLibrary/classifications/${specialtyId}`)
+            fetch(`${baseUrl}/classifications/${specialtyId}`)
                 .then(response => response.json())
                 .then(data => {
                     classificationSelect.innerHTML = '<option value="">選択してください</option>';
@@ -93,7 +95,7 @@
         procedureSelect.disabled = true;
 
         if (classificationId) {
-            fetch(`/MedicalLibrary/procedures/${classificationId}`)
+            fetch(`${baseUrl}/procedures/${classificationId}`)
                 .then(response => response.json())
                 .then(data => {
                     procedureSelect.innerHTML = '<option value="">選択してください</option>';
