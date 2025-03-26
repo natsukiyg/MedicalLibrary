@@ -71,24 +71,64 @@ class ManualController extends Controller
             'files' => 'nullable|array',
             'files.*' => 'nullable|url',
             'editable_files' => 'nullable|array',
-            'editable_files.*' => 'nullable|url',
-        ]);        
-    
+            'editable_files.*.name' => 'nullable|string|max:255',
+            'editable_files.*.url' => 'nullable|url',
+            'editable_files.*.view_url' => 'nullable|url',
+        ]);
+
         // ファイル情報を処理（名前を自動取得）
         $viewOnlyFiles = [];
-        foreach ($validated['files'] ?? [] as $fileUrl) {
-            $fileName = basename(parse_url($fileUrl, PHP_URL_PATH));
-            $viewOnlyFiles[] = ['name' => $fileName, 'url' => $fileUrl];
-        }
-    
         $editableFiles = [];
-        foreach ($validated['editable_files'] ?? [] as $fileUrl) {
-            $fileName = basename(parse_url($fileUrl, PHP_URL_PATH));
-            $editableFiles[] = ['name' => $fileName, 'url' => $fileUrl];
+        foreach ($validated['editable_files'] ?? [] as $file) {
+            $name = $file['name'] ?? '';
+            $url = $file['url'] ?? '';
+            $viewUrl = $file['view_url'] ?? '';
+
+            if (empty($url)) {
+                continue;
+            }
+
+            if (empty($name)) {
+                $name = basename(parse_url($url, PHP_URL_PATH));
+            }
+
+            $editableFiles[] = [
+                'name' => $name,
+                'url' => $url,
+            ];
+
+            if (!empty($viewUrl)) {
+                $viewOnlyFiles[] = [
+                    'name' => $name,
+                    'url' => $viewUrl,
+                ];
+            }
         }
-    
-        // 新しいマニュアルを作成
+
         $userHospital = auth()->user()->userHospital;
+
+        // すでに該当procedure_idのマニュアルがある場合はマージ・更新
+        $existingManual = Manual::where('procedure_id', $validated['procedure_id'])->first();
+
+        if ($existingManual) {
+            // editable_files と files を既存とマージ
+            $currentEditable = json_decode($existingManual->editable_files, true) ?? [];
+            $currentViewOnly = json_decode($existingManual->files, true) ?? [];
+
+            $mergedEditable = array_merge($currentEditable, $editableFiles);
+            $mergedViewOnly = array_merge($currentViewOnly, $viewOnlyFiles);
+
+            $existingManual->update([
+                'title' => $validated['title'], // 必要なら上書き
+                'updated_by' => auth()->id(),
+                'editable_files' => json_encode($mergedEditable),
+                'files' => json_encode($mergedViewOnly),
+            ]);
+
+            return redirect()->route('manuals.show', $existingManual->id)->with('success', '既存のマニュアルに追記しました！');
+        }
+
+        // 新しいマニュアルを作成
         Manual::create([
             'title' => $validated['title'],
             'content' => '', // 必要なら追加
@@ -103,7 +143,7 @@ class ManualController extends Controller
             'files' => json_encode($viewOnlyFiles),
             'editable_files' => json_encode($editableFiles),
         ]);
-    
+
         return redirect()->route('manuals.index')->with('success', '新しいマニュアルを作成しました！');
     }    
 

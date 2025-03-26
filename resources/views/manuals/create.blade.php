@@ -7,6 +7,17 @@
     <form action="{{ route('manuals.store') }}" method="POST">
         @csrf
 
+        @if ($errors->any())
+            <div class="mb-4 p-4 bg-red-100 text-red-700 rounded">
+                <strong>エラーがあります：</strong>
+                <ul class="mt-2 list-disc list-inside">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <!-- 診療科選択 -->
         <div class="mb-4">
             <label class="block text-sm font-medium text-gray-700">診療科</label>
