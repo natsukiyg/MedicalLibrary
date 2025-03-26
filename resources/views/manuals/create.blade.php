@@ -126,9 +126,10 @@
         fetch(`${baseUrl}/manuals/title-by-procedure/${procedureId}`)
             .then(response => response.json())
             .then(data => {
-                if (data && data.title) {
-                    const titleInput = document.querySelector('input[name="title"]');
-                    if (titleInput) {
+                const titleInput = document.querySelector('input[name="title"]');
+                if (titleInput) {
+                    titleInput.value = ''; // 先にクリアしておく
+                    if (data && data.title) {
                         titleInput.value = data.title;
                     }
                 }
