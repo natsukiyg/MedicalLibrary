@@ -118,6 +118,26 @@
         }
     });
 
+    // 術式選択時に該当procedure_idのマニュアルタイトルを取得し、自動入力
+    document.getElementById('procedure').addEventListener('change', function () {
+        const procedureId = this.value;
+        if (!procedureId) return;
+
+        fetch(`${baseUrl}/manuals/title-by-procedure/${procedureId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.title) {
+                    const titleInput = document.querySelector('input[name="title"]');
+                    if (titleInput) {
+                        titleInput.value = data.title;
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('タイトル取得エラー:', error);
+            });
+    });
+
     // ファイル追加機能
     function addFileInput(containerId) {
         const container = document.getElementById(containerId);

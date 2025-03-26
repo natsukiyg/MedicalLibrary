@@ -257,4 +257,15 @@ class ManualController extends Controller
         return response()->json($procedures);
     }
 
+    // 術式に紐づくマニュアルのタイトルを取得するAPI（JSONレスポンス）
+    public function getTitleByProcedure($procedureId)
+    {
+        $manual = Manual::where('procedure_id', $procedureId)->first();
+
+        if ($manual) {
+            return response()->json(['title' => $manual->title]);
+        }
+
+        return response()->json(['title' => null]);
+    }
 }

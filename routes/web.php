@@ -88,6 +88,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('manuals.delete.confirm');
     Route::delete('/manuals/{manual}', [ManualController::class, 'destroy'])
         ->name('manuals.destroy');
+    Route::get('/manuals/title-by-procedure/{procedure}', [ManualController::class, 'getTitleByProcedure']);
 
     // ------------------------------
     // ナレッジ関連（同様にリソースルートや段階的画面を用意）
