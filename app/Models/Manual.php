@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\AiAnalysis;
+use App\Models\ManualFile;
 
 class Manual extends Model
 {
@@ -49,6 +51,16 @@ class Manual extends Model
     public function updater()
     {
         return $this->belongsTo(User::class, 'updated_by');
+    }
+    
+    public function aiAnalyses()
+    {
+        return $this->hasMany(AiAnalysis::class);
+    }
+
+    public function manualFiles()
+    {
+        return $this->hasMany(ManualFile::class);
     }
     
 }

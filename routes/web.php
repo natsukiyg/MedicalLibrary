@@ -13,6 +13,8 @@ use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminManualController;
 use App\Http\Controllers\Admin\AdminKnowledgeController;
 use App\Http\Controllers\Operator\OperatorToolController;
+use App\Services\GraphService;
+use App\Http\Controllers\ManualAnalysisController;
 
 
 /*
@@ -149,28 +151,49 @@ Route::middleware(['auth', 'verified', 'role:admin'])
             ->name('knowledges.index');
 });
 
-/* // ------------------------------
-// 運営者向け（全体管理）
-// role:operator ミドルウェアで運営者判定
-// ------------------------------
-Route::middleware(['auth', 'verified', 'role:operator'])
-    ->prefix('operator')
-    ->as('operator.')
-    ->group(function () {
-
-        // 運営者ツール
-        Route::get('/dashboard', [OperatorToolController::class, 'index'])
-            ->name('dashboard');
-
-        // 全施設のユーザー管理、操作ログなど
-        // Route::get('/all-users', [...]);
-    });
- */
-
- Route::middleware(['web'])->group(function() {
+Route::middleware(['web'])->group(function() {
     // 診療科ごとの分類を取得するAPI
     Route::get('/classifications/{specialty}', [ManualController::class, 'getClassifications']);
 
     // 分類ごとの術式を取得するAPI
     Route::get('/procedures/{classification}', [ManualController::class, 'getProcedures']);
 });
+
+// ------------------------------
+// 将来的なGraph API導入用テストコード（コメントアウトのまま残す）
+// ------------------------------
+/* Route::get('/test-msgraph-meta', function () {
+    $shareUrl = 'https://1drv.ms/x/c/e9063c3cba030461/EWdHl2zj9H1NieCyE3Xh7tMBL0EH075DCF124Gp4QlIL0Q';
+
+    $accessToken = \App\Services\GraphService::getAccessToken();
+
+    $encodedUrl = rtrim(strtr(base64_encode($shareUrl), '+/', '-_'), '=');
+
+    $response = Http::withToken($accessToken)
+        ->get("https://graph.microsoft.com/v1.0/shares/u!{$encodedUrl}");
+
+    return $response->json();
+}); */
+
+/* Route::get('/test-msgraph', function () {
+    $shareUrl = 'https://onedrive.live.com/edit?id=E9063C3CBA030461!s6c974767f4e34d7d89e0b21375e1eed3&resid=E9063C3CBA030461!s6c974767f4e34d7d89e0b21375e1eed3&cid=e9063c3cba030461&ithint=file%2Cxlsx&redeem=aHR0cHM6Ly8xZHJ2Lm1zL3gvYy9lOTA2M2MzY2JhMDMwNDYxL0VXZEhsMnpqOUgxTmllQ3lFM1hoN3RNQkwwRUgwNzVEQ0YxMjRHcDRRbElMMFE&migratedtospo=true&wdo=2'; // ← ここにOneDriveの共有リンクを入れる
+
+    $content = GraphService::getFileContentFromShareUrl($shareUrl);
+
+    return response($content)->header('Content-Type', 'text/plain');
+}); */
+
+// マニュアル読み込みのテスト用ルートを追加
+Route::get('/manuals/{manual}/preview', [ManualController::class, 'previewText']);
+
+// マニュアル分析のルート
+Route::post('/manuals/{manual}/analyze', [ManualAnalysisController::class, 'analyze'])
+    ->name('manuals.analyze');
+
+// マニュアル分析に対する履歴保存のためのルート
+Route::post('/manuals/{manual}/analyze/followup', [ManualAnalysisController::class, 'analyzeFollowup'])
+    ->name('manuals.analyze.followup');
+
+// AI分析履歴削除のルート
+Route::delete('/ai-analyses/{analysis}', [ManualAnalysisController::class, 'destroy'])
+    ->name('ai-analyses.destroy');

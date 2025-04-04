@@ -7,6 +7,9 @@ use App\Models\Specialty;
 use App\Models\Classification;
 use App\Models\Procedure;
 use Illuminate\Http\Request;
+use PhpOffice\PhpWord\IOFactory as WordReader;
+use PhpOfficez\PhpSpreadsheet\IOFactory as ExcelReader;
+use Illuminate\Support\Str;
 
 class ManualController extends Controller
 {
@@ -267,5 +270,66 @@ class ManualController extends Controller
         }
 
         return response()->json(['title' => null]);
+    }
+
+    // マニュアルファイルの内容を抽出してテキストとして返す（Word / Excel 対応）
+    public function extractTextFromFile($url)
+    {
+        $fileName = basename(parse_url($url, PHP_URL_PATH));
+        dd($fileName);//確認用
+        $filePath = storage_path('app/public/manuals/' . $fileName);
+
+        if (!file_exists($filePath)) {
+            return 'ファイルが見つかりません。';
+        }
+
+        $extension = Str::lower(pathinfo($filePath, PATHINFO_EXTENSION));
+        $text = '';
+
+        try {
+            if ($extension === 'docx') {
+                $phpWord = WordReader::load($filePath);
+                foreach ($phpWord->getSections() as $section) {
+                    foreach ($section->getElements() as $element) {
+                        if (method_exists($element, 'getText')) {
+                            $text .= $element->getText() . "\n";
+                        }
+                    }
+                }
+            } elseif ($extension === 'xlsx') {
+                $spreadsheet = ExcelReader::load($filePath);
+                foreach ($spreadsheet->getAllSheets() as $sheet) {
+                    foreach ($sheet->toArray() as $row) {
+                        $text .= implode(' ', $row) . "\n";
+                    }
+                }
+            } else {
+                $text = '対応していないファイル形式です。';
+            }
+        } catch (\Exception $e) {
+            $text = 'エラーが発生しました：' . $e->getMessage();
+        }
+
+        return $text;
+    }
+
+    public function previewText(Manual $manual)
+    {
+        $files = json_decode($manual->files, true);
+        if (!$files || count($files) === 0) {
+            return 'ファイルがありません。';
+        }
+
+        // とりあえず最初のファイルを読み込んでみる
+        $fileUrl = $files[0]['url'] ?? null;
+
+        if (!$fileUrl) {
+            return 'ファイルURLが見つかりません';
+        }
+
+        $text = $this->extractTextFromFile($fileUrl);
+
+        // ブラウザで読みやすく改行とエスケープ処理
+        return nl2br(e($text));
     }
 }

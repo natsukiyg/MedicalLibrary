@@ -61,5 +61,55 @@
             <p class="text-gray-500">このマニュアルにはファイルが登録されていません。</p>
         @endif
     </div>
+
+    <!-- AI解析フォーム -->
+    <div class="mt-8 p-4 bg-blue-50 border border-blue-200 rounded">
+        <h2 class="text-lg font-semibold text-black mb-4">🧠 このマニュアルをAIで解析</h2>
+        <form action="{{ route('manuals.analyze', ['manual' => $manual->id]) }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <div class="mb-3">
+                <input type="file" name="file" accept=".docx,.xlsx"
+                    class="block w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    required>
+            </div>
+            <button type="submit"
+                class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors duration-200">
+                📤 AIに送信して解析
+            </button>
+        </form>
+        @if ($manual->aiAnalyses && $manual->aiAnalyses->count())
+            <div class="mt-6 space-y-3">
+                <h3 class="font-semibold text-gray-800">🧠 AIの解析履歴</h3>
+                @foreach ($manual->aiAnalyses as $analysis)
+                    <div class="flex {{ $analysis->role === 'user' ? 'justify-end' : 'justify-start' }}">
+                        <div class="max-w-[75%] p-3 my-1 rounded-lg text-sm leading-tight {{ $analysis->role === 'user' ? 'bg-blue-100 text-blue-900' : 'bg-gray-100 text-gray-800' }}">
+                            {!! preg_replace(
+                                '/(https?:\/\/[\w\-\.\/\?\&\=\#\%\:]+)/i',
+                                '<a href="$1" class="underline text-blue-700 hover:text-blue-900" target="_blank" rel="noopener noreferrer">$1</a>',
+                                nl2br(e(trim($analysis->content)))
+                            ) !!}
+                        </div>
+                            <form action="{{ route('ai-analyses.destroy', $analysis->id) }}" method="POST" onsubmit="return confirm('この解析履歴を削除しますか？');" class="mt-1 text-right">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="text-xs text-red-500 hover:underline">🗑️</button>
+                            </form>
+                    </div>
+                @endforeach
+            </div>
+        @endif
+        
+        <!-- チャット入力フォーム -->
+        <form action="{{ route('manuals.analyze.followup', ['manual' => $manual->id]) }}" method="POST" class="mt-6 space-y-3">
+            @csrf
+            <label for="followup" class="block text-sm font-medium text-gray-700">🔁 AIへの追加質問を入力：</label>
+            <textarea id="followup" name="followup" rows="3" required
+                class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+            <button type="submit"
+                class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition-colors duration-200">
+                🚀 質問を送信
+            </button>
+        </form>
+    </div>
 </div>
 @endsection

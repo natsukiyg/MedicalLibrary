@@ -35,4 +35,16 @@ return [
         ],
     ],
 
+    'msgraph' => [
+        'client_id' => env('MS_GRAPH_CLIENT_ID'),
+        'client_secret' => env('MS_GRAPH_CLIENT_SECRET'),
+        'tenant_id' => env('MS_GRAPH_TENANT_ID'),
+        'scope' => env('MS_GRAPH_SCOPE'),
+        'auth_url' => env('MS_GRAPH_AUTH_URL'),
+    ],
+
+    'openai' => [
+        'api_key' => env('OPENAI_API_KEY'),
+    ],
+
 ];
