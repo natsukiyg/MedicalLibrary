@@ -2,6 +2,9 @@
     RewriteEngine On
     RewriteBase /MedicalLibrary/
 
+    # 明示的に許可するメソッド追加
+    RewriteCond %{REQUEST_METHOD} ^(GET|POST|HEAD|PUT|DELETE)$
+
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
 
