@@ -1,4 +1,8 @@
 <IfModule mod_rewrite.c>
+    <LimitExcept GET POST HEAD>
+        Deny from all
+    </LimitExcept>
+
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes
     </IfModule>
@@ -22,3 +26,4 @@
     RewriteRule ^ index.php [L]
 
 </IfModule>
+</file>
