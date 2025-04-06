@@ -197,3 +197,8 @@ Route::post('/manuals/{manual}/analyze/followup', [ManualAnalysisController::cla
 // AI分析履歴削除のルート
 Route::delete('/ai-analyses/{analysis}', [ManualAnalysisController::class, 'destroy'])
     ->name('ai-analyses.destroy');
+
+//確認用
+Route::get('/check-laravel', function () {
+    return 'Laravel is working correctly!';
+});
