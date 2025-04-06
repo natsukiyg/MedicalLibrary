@@ -1,4 +1,3 @@
-@if (Route::has('login'))
 <header class="bg-white dark:bg-gray-800 shadow p-4 flex justify-between items-center">
     <div class="flex flex-col">
         <!-- サブタイトル -->
@@ -34,4 +33,3 @@
         @endauth
     </div>
 </header>
-@endif
