@@ -48,6 +48,8 @@ class ManualAnalysisController extends Controller
         }
 
         $text = '';
+        $text = preg_replace('/\n{2,}/', "\n", $text); // 連続改行を1つに
+        $text = trim($text); // 先頭末尾の空白除去
 
         try {
             if ($extension === 'docx') {
@@ -78,7 +80,7 @@ class ManualAnalysisController extends Controller
             'model' => 'gpt-3.5-turbo', //いずれ有料版でGPT-4に変更予定
             'messages' => [
                 ['role' => 'system', 'content' => 'あなたは医療マニュアルの要約・ガイドライン提案を行うAIです。'],
-                ['role' => 'user', 'content' => "以下のマニュアルの内容から、参考ガイドラインや参照URLを提案してください：\n\n" . $text],
+                ['role' => 'user', 'content' => "以下は医療従事者向けに作成されたマニュアルです。内容を正確かつ簡潔に要約してください。さらに、関連する医学的なガイドライン・参考文献・注意事項・推奨される実践方法についても具体的に提示してください。可能であれば参照URLも日本語または英語で含めてください。\n\n" . $text],
             ],
         ]);
 
@@ -106,12 +108,24 @@ class ManualAnalysisController extends Controller
 
         $question = $request->input('followup');
 
+        $previousMessages = \App\Models\AiAnalysis::where('manual_id', $manualId)->orderBy('created_at')->get();
+
+        $messages = [
+            ['role' => 'system', 'content' => 'あなたは親切な医療AIアシスタントです。']
+        ];
+
+        foreach ($previousMessages as $msg) {
+            $messages[] = [
+                'role' => $msg->role,
+                'content' => $msg->content,
+            ];
+        }
+
+        $messages[] = ['role' => 'user', 'content' => $question];
+
         $response = OpenAI::chat()->create([
             'model' => 'gpt-3.5-turbo',
-            'messages' => [
-                ['role' => 'system', 'content' => 'あなたは親切な医療AIアシスタントです。'],
-                ['role' => 'user', 'content' => $question],
-            ],
+            'messages' => $messages,
         ]);
 
         $aiReply = $response->choices[0]->message->content ?? 'AIの返答が取得できませんでした。';
