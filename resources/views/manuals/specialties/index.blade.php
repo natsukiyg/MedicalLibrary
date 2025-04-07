@@ -32,10 +32,10 @@
     </div>
     
     <!-- 検索フォーム -->
-    <form action="{{ route('manuals.specialty.index') }}" method="GET" class="mb-6 flex items-center gap-2">
-        <input type="text" name="search" placeholder="診療科 / 術式 / 医師名 etc"
+    <form action="{{ route('manuals.search') }}" method="GET" class="mb-6 flex items-center gap-2">
+        <input type="text" name="keyword" placeholder="診療科 / 分類 / 術式 etc"
                class="border border-gray-300 px-4 py-2 rounded w-3/4 focus:outline-none focus:ring-2 focus:ring-blue-300" 
-            value="{{ request('search') }}">
+            value="{{ request('keyword') }}">
         <button type="submit" class="cursor-pointer rounded-lg px-3 py-2 text-sm transition-colors duration-200 bg-[rgba(0,0,128,0.59)] hover:bg-[rgba(0,0,128,0.8)] text-white">
             検索
         </button>

@@ -21,6 +21,27 @@ class ManualController extends Controller
         return view('manuals.specialties.index', compact('specialties'));
     }
 
+    // 検索機能（マニュアルタイトルで検索）
+    public function search(Request $request)
+    {
+        $keyword = $request->input('keyword');
+
+        $manuals = Manual::with(['procedure.classification.specialty'])
+            ->where('title', 'like', "%{$keyword}%")
+            ->orWhereHas('procedure', function ($query) use ($keyword) {
+                $query->where('name', 'like', "%{$keyword}%");
+            })
+            ->orWhereHas('procedure.classification', function ($query) use ($keyword) {
+                $query->where('name', 'like', "%{$keyword}%");
+            })
+            ->orWhereHas('procedure.classification.specialty', function ($query) use ($keyword) {
+                $query->where('name', 'like', "%{$keyword}%");
+            })
+            ->get();
+
+        return view('manuals.search_results', compact('manuals', 'keyword'));
+    }
+
     //選択した診療科に基づく分類(classifications)一覧のビューを表示する
     public function classificationIndex($specialtyId)
     {

@@ -80,6 +80,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('manuals.classification.index');
     Route::get('/manuals/specialties/{specialty}/classifications/{classification}/procedures', [ManualController::class, 'procedureIndex'])
         ->name('manuals.procedure.index');
+    // マニュアルの検索（固定パス）
+    Route::get('/manuals/search', [ManualController::class, 'search'])
+        ->name('manuals.search');
+    // マニュアルの詳細表示
     Route::get('/manuals/{manual}', [ManualController::class, 'show'])
         ->name('manuals.show');
     Route::get('/manuals/{manual}/edit', [ManualController::class, 'edit'])
