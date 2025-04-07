@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# ===== 設定ここから =====
+REMOTE_USER=natsukiyg
+REMOTE_HOST=natsukiyg.sakura.ne.jp
+REMOTE_DIR=/home/natsukiyg/MedicalLibrary
+# ===== 設定ここまで =====
+
+echo "🚀 .env.production を本番サーバーに送信中..."
+
+# 本番に.env.productionを送信
+scp .env.production ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_DIR}/.env.production
+
+# 本番サーバー上での処理を実行
+ssh ${REMOTE_USER}@${REMOTE_HOST} << EOF
+  cd ${REMOTE_DIR}
+  echo "🔗 .env を .env.production にリンク"
+  rm -f .env
+  ln -s .env.production .env
+
+  echo "🧹 Laravel キャッシュクリア"
+  php artisan config:clear
+  php artisan cache:clear
+  php artisan config:cache
+
+  echo "✅ 本番環境の .env 反映が完了しました"
+EOF
