@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container mx-auto p-4 bg-white">
-    <h1 class="text-2xl font-bold text-black mb-6">新規マニュアル作成</h1>
+    <h1 class="text-2xl font-bold text-medical-neutral mb-6">新規マニュアル作成</h1>
 
     <form action="{{ route('manuals.store') }}" method="POST">
         @csrf
@@ -20,9 +20,9 @@
 
         <!-- 診療科選択 -->
         <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700">診療科</label>
+            <label class="block text-sm font-medium text-medical-neutral">診療科</label>
             <select name="specialty_id" id="specialty" required
-                    class="mt-1 p-2 border border-gray-300 rounded w-full">
+                    class="mt-1 p-2 border border-gray-300 rounded w-full text-medical-neutral">
                 <option value="">選択してください</option>
                 @foreach ($specialties as $specialty)
                     <option value="{{ $specialty->id }}">{{ $specialty->name }}</option>
@@ -32,39 +32,39 @@
 
         <!-- 分類選択 -->
         <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700">分類</label>
+            <label class="block text-sm font-medium text-medical-neutral">分類</label>
             <select name="classification_id" id="classification" required disabled
-                    class="mt-1 p-2 border border-gray-300 rounded w-full">
+                    class="mt-1 p-2 border border-gray-300 rounded w-full text-medical-neutral">
                 <option value="">診療科を選択してください</option>
             </select>
         </div>
 
         <!-- 術式選択 -->
         <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700">術式</label>
+            <label class="block text-sm font-medium text-medical-neutral">術式</label>
             <select name="procedure_id" id="procedure" required disabled
-                    class="mt-1 p-2 border border-gray-300 rounded w-full">
+                    class="mt-1 p-2 border border-gray-300 rounded w-full text-medical-neutral">
                 <option value="">分類を選択してください</option>
             </select>
         </div>
 
         <!-- タイトル入力 -->
         <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700">タイトル</label>
+            <label class="block text-sm font-medium text-medical-neutral">タイトル</label>
             <input type="text" name="title" value="{{ old('title') }}" required
-                   class="mt-1 p-2 border border-gray-300 rounded w-full">
+                   class="mt-1 p-2 border border-gray-300 rounded w-full text-medical-neutral">
         </div>
 
         <!-- 編集可能なファイルのURL -->
         <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700">編集可能ファイルURL</label>
+            <label class="block text-sm font-medium text-medical-neutral">編集可能ファイルURL</label>
             <div id="editable-file-container"></div>
             <button type="button" id="add-editable-file"
-                    class="bg-[rgba(0,142,20,0.59)] hover:bg-[rgba(0,142,20,0.8)] text-white px-3 py-1 rounded mt-2">+ ファイル追加</button>
+                    class="bg-medical-accent/70 hover:bg-medical-accent text-white px-3 py-1 rounded mt-2">+ ファイル追加</button>
         </div>
 
         <button type="submit"
-                class="bg-[rgba(0,0,128,0.59)] hover:bg-[rgba(0,0,128,0.8)] text-white px-4 py-2 rounded mt-4">
+                class="bg-medical-accent hover:bg-medical-neutral text-white px-4 py-2 rounded mt-4">
             保存する
         </button>
     </form>
@@ -160,7 +160,7 @@
             <input type="text" name="editable_files[${index}][view_url]" placeholder="閲覧用URLを入力"
                    class="mt-1 p-2 border border-gray-300 rounded w-full">
 
-            <button type="button" class="remove-file bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded mt-2">✕</button>
+            <button type="button" class="remove-file bg-medical-neutral hover:bg-medical-neutral/50 text-white px-2 py-1 rounded mt-2">✕</button>
         `;
 
         container.appendChild(newInput);
