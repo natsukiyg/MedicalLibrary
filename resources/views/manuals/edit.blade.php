@@ -44,27 +44,26 @@
                                 ✕ 削除
                             </button>
                         </div>
-                    </div>
-
-                    <div class="file-edit hidden w-full">
-                        <input type="hidden" name="editable_files[{{ $index }}][name]" value="{{ $file['name'] ?? '' }}">
-                        <input type="text" name="editable_files[{{ $index }}][url]" value="{{ $file['url'] ?? '' }}" 
-                               class="mt-1 p-2 border border-gray-300 rounded w-full">
-                        @php
-                            $matchingViewUrl = '';
-                            foreach ($manual->files_array ?? [] as $viewFile) {
-                                if (($viewFile['name'] ?? '') === ($file['name'] ?? '')) {
-                                    $matchingViewUrl = $viewFile['url'] ?? '';
-                                    break;
+                        
+                        <div class="file-edit hidden w-full">
+                            <input type="hidden" name="editable_files[{{ $index }}][name]" value="{{ $file['name'] ?? '' }}">
+                            <input type="text" name="editable_files[{{ $index }}][url]" value="{{ $file['url'] ?? '' }}" 
+                                   class="mt-1 p-2 border border-gray-300 rounded w-full">
+                            @php
+                                $matchingViewUrl = '';
+                                foreach ($manual->files_array ?? [] as $viewFile) {
+                                    if (($viewFile['name'] ?? '') === ($file['name'] ?? '')) {
+                                        $matchingViewUrl = $viewFile['url'] ?? '';
+                                        break;
+                                    }
                                 }
-                            }
-                        @endphp
-                        <input type="text" name="editable_files[{{ $index }}][view_url]" value="{{ $matchingViewUrl }}" 
-                               class="mt-1 p-2 border border-gray-300 rounded w-full" placeholder="閲覧用URL（任意）">
-                        <div class="flex gap-2 mt-2">
-                            <button type="button" class="cancel-edit bg-gray-400 hover:bg-gray-500 text-white px-2 py-1 rounded">✖ キャンセル</button>
+                            @endphp
+                            <input type="text" name="editable_files[{{ $index }}][view_url]" value="{{ $matchingViewUrl }}" 
+                                   class="mt-1 p-2 border border-gray-300 rounded w-full" placeholder="閲覧用URL（任意）">
+                            <div class="flex gap-2 mt-2">
+                                <button type="button" class="cancel-edit bg-gray-400 hover:bg-gray-500 text-white px-2 py-1 rounded">✖ キャンセル</button>
+                            </div>
                         </div>
-                    </div>
                 </div>
                 @endforeach
                 <div class="mt-6 flex flex-col items-start gap-2 text-sm">
