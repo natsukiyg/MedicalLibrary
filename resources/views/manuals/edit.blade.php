@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container mx-auto p-4 bg-white">
-    <h1 class="text-2xl font-bold text-black mb-6">マニュアル編集</h1>
+    <h1 class="text-2xl font-bold text-medical-neutral mb-6">マニュアル編集</h1>
 
     <form action="{{ route('manuals.update', $manual->id) }}" method="POST">
         @csrf
@@ -11,7 +11,7 @@
         <!-- タイトル編集 -->
         <div class="mb-4">
             <label class="block text-sm font-medium text-gray-700">タイトル</label>
-            <input type="text" name="title" value="{{ old('title', $manual->title) }}" class="mt-1 p-2 border border-gray-300 rounded w-full">
+            <input type="text" name="title" value="{{ old('title', $manual->title) }}" class="mt-1 p-2 border border-gray-300 text-medical-neutral rounded w-full">
         </div>
 
         <!-- ファイルの閲覧・編集用URL -->
@@ -26,23 +26,21 @@
                 @foreach ($editableFiles as $index => $file)
                 <div class="file-entry flex items-center gap-2 mb-2" data-index="{{ $index }}">
                     <div class="file-view flex justify-between items-center bg-white shadow-md rounded-lg p-4 border border-gray-200 w-full">
-                        <span class="text-black font-medium flex-1">
+                        <span class="text-medical-neutral font-medium flex-1">
                             📂  {{ $file['name'] ?? '不明なファイル' }}
                         </span>
-
-                        <div class="flex gap-4">
                             <a href="{{ $file['url'] ?? '#' }}" target="_blank"
-                               class="file-link text-blue-500 underline hover:text-blue-700 truncate"
+                               class="file-link text-center rounded px-3 py-1.5 text-sm text-medical-neutral bg-medical-accent/30 hover:bg-medical-accent/10 transition-colors duration-200"
                                data-index="{{ $index }}">
-                                編集
+                               ✎ 編集
                             </a>
 
-                            <button type="button" class="edit-file bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded"
+                            <button type="button" class="edit-file bg-medical-accent hover:bg-medical-accent/50 text-white px-3 py-1 rounded"
                                     data-index="{{ $index }}">
-                                ✎ URL
+                                 URL
                             </button>
 
-                            <button type="button" class="remove-file bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded">
+                            <button type="button" class="remove-file bg-medical-neutral hover:bg-medical-neutral/50 text-white px-3 py-1 rounded">
                                 ✕ 削除
                             </button>
                         </div>
@@ -69,22 +67,20 @@
                     </div>
                 </div>
                 @endforeach
+                <div class="mt-6 flex flex-col items-start gap-2 text-sm">
+                    <button type="button" id="add-file" class="bg-medical-accent hover:bg-medical-neutral text-white px-2 py-1 rounded">
+                        + 追加
+                    </button>
+
+                    <button type="submit" class="bg-medical-accent hover:bg-medical-neutral text-white px-2 py-1 rounded">
+                        保存する
+                    </button>
+
+                    <a href="{{ route('manuals.show', $manual->id) }}" class="text-center bg-medical-base/30 hover:bg-medical-base text-medical-neutral px-2 py-1 rounded">
+                        ← 戻る
+                    </a>
+                </div>
             </div>
-
-        </div>
-
-        <div class="mt-6 flex flex-col items-start gap-2 text-sm">
-            <button type="button" id="add-file" class="bg-[rgba(0,0,128,0.59)] hover:bg-[rgba(0,0,128,0.8)] text-white px-2 py-1 rounded">
-                + 追加
-            </button>
-
-            <button type="submit" class="bg-[rgba(0,0,128,0.59)] hover:bg-[rgba(0,0,128,0.8)] text-white px-2 py-1 rounded">
-                保存する
-            </button>
-
-            <a href="{{ route('manuals.show', $manual->id) }}" class="text-center bg-gray-300 hover:bg-gray-400 text-black px-2 py-1 rounded">
-                ← 戻る
-            </a>
         </div>
     </form>
 </div>
@@ -135,7 +131,7 @@
 
         wrapper.innerHTML = `
             <div class="file-view hidden flex items-center justify-between bg-white shadow-md rounded-lg p-4 border border-gray-200 w-full">
-                <span class="text-black font-medium truncate">
+                <span class="text-medical-neutral font-medium truncate">
                     📂 新しいファイル
                 </span>
                 <button type="button" class="edit-file bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded"

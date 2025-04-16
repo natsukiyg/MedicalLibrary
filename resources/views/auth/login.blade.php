@@ -1,14 +1,14 @@
 <x-app-layout>
     @section('content')
     <div class="bg-white flex justify-center items-center min-h-[calc(100vh-160px)]">
-        <div class="w-full max-w-md bg-white p-6 rounded shadow">
+        <div class="w-full max-w-md bg-white p-6 rounded border border-medical-base">
             <form method="POST" action="{{ route('login') }}">
                 @csrf
 
                 <!-- Email -->
                 <div>
                     <x-input-label for="email" :value="__('メールアドレス')" />
-                    <x-text-input id="email" class="block mt-1 w-full"
+                    <x-text-input id="email" class="block mt-1 w-full text-medical-neutral"
                                   type="email"
                                   name="email"
                                   :value="old('email')"
@@ -19,7 +19,7 @@
                 <!-- Password -->
                 <div class="mt-4">
                     <x-input-label for="password" :value="__('パスワード')" />
-                    <x-text-input id="password" class="block mt-1 w-full"
+                    <x-text-input id="password" class="block mt-1 w-full text-medical-neutral"
                                   type="password"
                                   name="password"
                                   required autocomplete="current-password" />
@@ -35,7 +35,7 @@
                 @endif
 
                 <div class="mt-4">
-                    <button type="submit" class="w-full bg-[rgba(0,0,128,0.59)] hover:bg-[rgba(0,0,128,0.8)] text-white font-semibold py-2 px-4 rounded">
+                    <button type="submit" class="w-full bg-medical-accent hover:bg-medical-accent/50 text-white font-semibold py-2 px-4 rounded">
                         ログイン
                     </button>
                 </div>
@@ -46,7 +46,7 @@
                 <button class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded mb-2">
                     <i class="fab fa-facebook mr-2"></i>Facebookでログイン
                 </button>
-                <button class="w-full bg-white border border-gray-300 hover:bg-gray-100 text-black font-semibold py-2 px-4 rounded">
+                <button class="w-full bg-white border border-gray-300 hover:bg-gray-100 text-medical-neutral font-semibold py-2 px-4 rounded">
                     <i class="fab fa-google mr-2"></i>Googleでログイン
                 </button>
             </div> -->
@@ -56,7 +56,7 @@
                 アカウントが未登録の方はこちら
             </div>
             <div class="mt-2 text-center">
-                <a href="{{ route('register') }}" class="w-full block text-center bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded">
+                <a href="{{ route('register') }}" class="w-full block text-center bg-medical-neutral hover:bg-medical-neutral/50 text-white font-semibold py-2 px-4 rounded">
                     新規登録
                 </a>
             </div>

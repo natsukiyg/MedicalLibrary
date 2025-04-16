@@ -1,3 +1,4 @@
+.gitignore
 /.phpunit.cache
 /node_modules
 /public/hot
@@ -20,4 +21,4 @@ yarn-error.log
 /.idea
 /.vscode
 *.DS_Store
-
+deploy-env.sh

@@ -3,11 +3,11 @@
 @section('content')
 <div class="container mx-auto p-4 bg-white">
     <!-- ページタイトル -->
-    <h1 class="text-4xl font-bold mb-6">登録情報</h1>
+    <h1 class="text-4xl text-medical-neutral font-bold mb-6">登録情報</h1>
 
     <!-- 更新成功メッセージ -->
     @if (session('status'))
-        <div class="mb-4 text-green-600 font-semibold">
+        <div class="mb-4 text-medical-neutral font-semibold">
             {{ session('status') }}
         </div>
     @endif
@@ -19,10 +19,10 @@
 
         <!-- 氏名 -->
         <div>
-            <label for="name" class="block mb-1 text-gray-700 font-semibold">氏名:</label>
+            <label for="name" class="block mb-1 text-medical-neutral font-semibold">氏名:</label>
             <input type="text" id="name" name="name"
                    value="{{ old('name', $user->name) }}"
-                   class="border border-gray-300 rounded w-1/2 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                   class="border border-gray-300 rounded w-1/2 px-4 py-2 text-medical-neutral focus:outline-none focus:ring-2 focus:ring-medical-accent"
                    required>
             @error('name')
                 <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
@@ -31,11 +31,11 @@
 
         <!-- 性別 -->
         <div>
-            <label class="block mb-1 text-gray-700 font-semibold">性別:</label>
+            <label class="block mb-1 text-medical-neutral font-semibold">性別:</label>
             @php
                 $gender = old('gender', $user->gender ?? 'non');
             @endphp
-            <div class="flex items-center gap-4 mt-2">
+            <div class="flex items-center gap-4 mt-2 text-medical-neutral">
                 <label class="flex items-center cursor-pointer">
                     <input type="radio" name="gender" value="male" class="mr-2 focus:ring-0" @if($gender === 'male') checked @endif>
                     男性
@@ -56,10 +56,10 @@
 
         <!-- 生年月日 -->
         <div>
-            <label for="birthday" class="block mb-1 text-gray-700 font-semibold">生年月日:</label>
+            <label for="birthday" class="block mb-1 text-medical-neutral font-semibold">生年月日:</label>
             <input type="date" id="birthday" name="birthday"
                    value="{{ old('birthday', $user->birthday) }}"
-                   class="border border-gray-300 rounded w-1/2 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300">
+                   class="border border-gray-300 rounded w-1/2 px-4 py-2 text-medical-neutral focus:outline-none focus:ring-2 focus:ring-medical-accent">
             @error('birthday')
                 <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
             @enderror
@@ -67,9 +67,9 @@
 
         <!-- 住所 -->
         <div>
-            <label for="address" class="block mb-1 text-gray-700 font-semibold">都道府県:</label>
+            <label for="address" class="block mb-1 text-medical-neutral font-semibold">都道府県:</label>
             <select name="address" id="address"
-                    class="border border-gray-300 rounded w-1/2 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300">
+                    class="border border-gray-300 rounded w-1/2 px-4 py-2 text-medical-neutral focus:outline-none focus:ring-2 focus:ring-medical-accent">
                 <option value="">選択してください</option>
                 <option value="北海道" {{ old('address', $user->address ?? '') == '北海道' ? 'selected' : '' }}>北海道</option>
                 <option value="青森県" {{ old('address', $user->address ?? '') == '青森県' ? 'selected' : '' }}>青森県</option>
@@ -126,10 +126,10 @@
 
         <!-- メールアドレス -->
         <div>
-            <label for="email" class="block mb-1 text-gray-700 font-semibold">メールアドレス:</label>
+            <label for="email" class="block mb-1 text-medical-neutral font-semibold">メールアドレス:</label>
             <input type="email" id="email" name="email"
                    value="{{ old('email', $user->email) }}"
-                   class="border border-gray-300 rounded w-1/2 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                   class="border border-gray-300 rounded w-1/2 px-4 py-2 text-medical-neutral focus:outline-none focus:ring-2 focus:ring-medical-accent"
                    required>
             @error('email')
                 <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
@@ -138,9 +138,9 @@
 
         <!-- パスワード -->
         <div>
-            <label for="password" class="block mb-1 text-gray-700 font-semibold">パスワード:</label>
+            <label for="password" class="block mb-1 text-medical-neutral font-semibold">パスワード:</label>
             <input type="password" id="password" name="password"
-                   class="border border-gray-300 rounded w-1/2 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                   class="border border-gray-300 rounded w-1/2 px-4 py-2 text-medical-neutral focus:outline-none focus:ring-2 focus:ring-medical-accent"
                    placeholder="変更する場合のみ入力してください">
             @error('password')
                 <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
@@ -149,7 +149,7 @@
         <!-- 更新ボタン -->
         <div class="mt-6">
             <button type="submit"
-                    class="block rounded-lg cursor-pointer px-4 py-2 bg-[rgba(0,0,128,0.59)] hover:bg-[rgba(0,0,128,0.8)] transition-colors duration-200 text-white">
+                    class="block rounded-lg cursor-pointer px-4 py-2 bg-medical-accent hover:bg-medical-neutral transition-colors duration-200 text-white">
                 更新
             </button>
         </div>

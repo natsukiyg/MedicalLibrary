@@ -6,7 +6,7 @@
     <title>Medical Library</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-white text-black font-sans antialiased">
+<body class="bg-white text-medical-neutral font-sans antialiased">
     <div class="min-h-screen flex flex-col">
 
         <!-- ヘッダー -->
@@ -15,7 +15,7 @@
         <!-- メイン -->
         <main class="flex flex-col items-center justify-center flex-grow px-4 text-center">
             <h2 class="text-3xl font-bold mt-8">ようこそ！<br>Medical Libraryへ</h2>
-            <p class="text-base text-gray-700 mt-4">
+            <p class="text-base text-medical-neutral mt-4">
                 このアプリは看護師のための<br>ナレッジシェアアプリです。
             </p>
 

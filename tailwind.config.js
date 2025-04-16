@@ -11,11 +11,11 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: '#000080',          // Navy
-        primaryLight: 'rgba(0, 0, 128, 0.3)',  // Navy 30%
-        primaryDark: 'rgba(0, 0, 128, 0.59)',   // Navy 59%
-        greenCustom: '#008E14',      // 指定の緑
-        pinkCustom: 'rgba(247,79,191,0.36)',  // ピンク 36%
+        medical: {
+          base: '#C2CBD7',     // ブルーグレー（背景/コンテナ）
+          accent: '#A398D2',   // ラベンダー（ボタン/アクセント）
+          neutral: '#4E5975',  // ソフトネイビー（見出し/強調）
+        },
       },
       fontFamily: {
         sans: ['Inter', ...defaultTheme.fontFamily.sans],

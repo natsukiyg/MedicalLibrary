@@ -3,7 +3,7 @@
 @section('content')
 <div class="container mx-auto p-4 bg-white">
     <!-- タイトル -->
-    <h1 class="text-2xl font-bold mb-6">施設 / 部署 / 権限</h1>
+    <h1 class="text-2xl text-medical-neutral font-bold mb-6">施設 / 部署 / 権限</h1>
 
     @php
         // ログインユーザーの user_hospital リレーションを取得（存在しない場合は null）
@@ -23,32 +23,32 @@
 
         <!-- 所属施設 -->
         <div>
-            <label for="hospital" class="block mb-1 text-gray-700 font-semibold">
+            <label for="hospital" class="block mb-1 text-medical-neutral font-semibold">
                 所属施設:
             </label>
             <input type="text" name="hospital" id="hospital"
-                   class="border border-gray-300 rounded w-1/2 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                   class="border border-gray-300 rounded w-1/2 px-4 py-2 text-medical-neutral focus:outline-none focus:ring-2 focus:ring-medical-accent"
                    placeholder="例: ○○病院"
                    value="{{ old('hospital', $hospitalName) }}" />
         </div>
 
         <!-- 所属部署 -->
         <div>
-            <label for="department" class="block mb-1 text-gray-700 font-semibold">
+            <label for="department" class="block mb-1 text-medical-neutral font-semibold">
                 所属部署:
             </label>
             <input type="text" name="department" id="department"
-                   class="border border-gray-300 rounded w-1/2 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                   class="border border-gray-300 rounded w-1/2 px-4 py-2 text-medical-neutral focus:outline-none focus:ring-2 focus:ring-medical-accent"
                    placeholder="例: 手術室 / ○○病棟"
                    value="{{ old('department', $departmentName) }}" />
         </div>
 
         <!-- 権限選択 -->
         <div>
-            <label class="block mb-1 text-gray-700 font-semibold">
+            <label class="block mb-1 text-medical-neutral font-semibold">
                 権限:
             </label>
-            <div class="flex items-center gap-6 mt-2">
+            <div class="flex items-center gap-6 mt-2 text-medical-neutral">
                 <label class="flex items-center cursor-pointer">
                     <input type="radio" name="role" value="staff" class="mr-2 focus:ring-0" 
                         @if(old('role', $storedRole) === 'staff') checked @endif>
@@ -70,7 +70,7 @@
         <!-- 登録ボタン -->
         <div>
             <button type="submit"
-                    class="block rounded-lg cursor-pointer px-4 py-2 bg-[rgba(0,0,128,0.59)] hover:bg-[rgba(0,0,128,0.8)] transition-colors duration-200 text-white ">
+                    class="block rounded-lg cursor-pointer px-4 py-2 bg-medical-accent hover:bg-medical-neutral transition-colors duration-200 text-white ">
                 登録
             </button>
         </div>

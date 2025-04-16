@@ -27,7 +27,7 @@
         <div class="flex flex-1">
             <!-- サイドバー (ログイン時のみ表示) -->
             @auth
-                <aside class="w-64 bg-white p-4">
+                <aside class="w-64 bg-medical-accent/30 p-4">
                     @include('layouts.sidebar')
                 </aside>
             @endauth
